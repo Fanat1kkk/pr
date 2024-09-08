@@ -10,7 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from allauth.utils import generate_unique_username
 from allauth.account.models import EmailAddress
 
-from .utils import del_zero
+from .utils import del_zero, generate_password
 from .exceptions import BalanceException
 
 
@@ -71,7 +71,7 @@ class ClientManager(UserManager):
                 user = self.get(email=email)
             except self.model.DoesNotExist:
                 username = generate_unique_username([email, 'username', 'user'])
-                password = self.make_random_password()
+                password = generate_password()
                 user: Client = self.model(username=username, password=password, email=email, **kwargs)
                 user.set_password(password)
                 user.save()

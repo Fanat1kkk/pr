@@ -1,5 +1,11 @@
 from decimal import Decimal
+import secrets
+import string
+from random import randint
 
+
+def generate_password():
+    return ''.join(secrets.choice(string.ascii_letters + string.digits) for i in range(randint(9, 14)))
 
 def del_zero(num: Decimal):
     return num
