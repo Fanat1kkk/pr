@@ -1,0 +1,88 @@
+{% load static %}
+
+<div class="table_orders">
+	<h2 class="text-center mt-2">Ваши заказы</h2>
+	<h2 class="text-center mt-2">Если заказ отменён или выполнен частично, то средства возвращаются на ваш баланс!</h2>
+    <div class="d-flex flex-column justify-content-center">
+		<div class="d-flex mt-4 col-4 col-md-4">
+			<select class="form-select form-select-sm" id="sort_orders" data-email="{{ email }}">
+				<option {% if status == 'ALL' %}selected{% endif %} value="ALL">Все</option>
+				<option {% if status == 'INWOR' %}selected{% endif %} value="INWOR">В работе</option>
+				<option {% if status == 'COMPL' %}selected{% endif %} value="COMPL">Выполненые</option>
+				<option {% if status == 'CANC' %}selected{% endif %} value="CANC">Отменённые</option>
+			  </select>
+		</div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="table-wrap">
+                <div class="table-responsive-md">
+                    <table class="table table-hover table-bordered">
+						<thead>
+							<tr>
+							<th scope="col">ID заказа</th>
+							<th scope="col">Ссылка</th>
+							<th scope="col">До старта</th>
+							<th scope="col">Выполнено/Всего</th>
+							<th scope="col">Цена</th>
+							<th scope="col">Оплачено</th>
+							<th scope="col">Статус</th>
+							<th scope="col">Действие</th>
+							</tr>
+						</thead>
+						<tbody id="table">
+							{% for order in orders %}
+							<tr
+							{% if order.status == "INWOR" %}
+							class="table-light"
+							{% elif order.status == "NOPAY" %}
+							class="table-danger"
+							{% elif order.status == "BLOCK" or order.status == "CANC" %}
+							class="table-danger"
+							{% elif order.status == "COMPL" %}
+							class="table-info"
+							{% elif order.status == "PART" %}
+							class="table-warning"
+							{% elif order.status == "WST" %}
+							class="table-primary"
+							{% elif order.status == "WCL" %}
+							class="table-secondary"
+							{% endif %}
+							>
+								<th scope="row">{{ order.order_id }}</th>
+								<td><a href="{{ order.task_url }}">Ссылка</a></td>
+								<td>{{ order.start_count }}</td>
+								<td>{{ order.end_count }}/{{ order.count }}</td>
+								<td>{{ order.price }}</td>
+								<td>{{ order.get_price_end_count_from_display }}</td>
+								<td id="td_status_{{ order.order_id }}">{{ order.get_status_display }}</td>
+								<td class="text-center" id="td_btn_{{ order.order_id }}">
+									{% if order.status == "COMPL" and not order.review %}
+									<button type="button" class="comm_btn btn btn-success" id="btn_rate_{{ order.order_id }}" data-order-id="{{ order.order_id }}" data-auth="{{ user.is_authenticated }}" data-csrf="{{csrf_token}}">ОЦЕНИТЬ</button>
+									{% elif order.status == "INWOR" %}
+										{% if order.service.is_cancellation %}
+										<button type="button" class="stop_btn btn btn-danger" id="btn_cancel_{{ order.order_id }}" data-order-id="{{ order.order_id }}" data-auth="{{ user.is_authenticated }}" data-csrf="{{csrf_token}}">
+											<span id="spin-{{ order.order_id }}" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden></span>
+											STOP
+										</button>
+										{% else %}
+										<p>Нельзя отменить</p>
+										{% endif %}
+
+									{% else %}
+									<p>Нет действий</p>
+									{% endif %}
+									</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+	{% if not orders %}
+	<h2 class="text-center">Нет заказов</h2>
+	{% endif %}
+</div>
+<script src="{% static 'my_site/js/orders.js' %}"></script>

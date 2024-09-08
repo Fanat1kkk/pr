@@ -1,0 +1,25 @@
+{% extends 'my_site/base.html' %}
+
+
+{% block title %}Ваши заказы{% endblock title %}
+
+{% block table %}
+<section class="ftco-section">
+    <div class="container">
+      {% if orders %}
+      {% include 'my_site/table_orders.html' %}
+      {% else %}
+
+        {% if user.is_authenticated %}
+        {% include 'my_site/table_orders.html' %}
+        {% else %}
+        <div class="search_orders">
+          {% include 'my_site/search.html' %}
+        </div>
+        {% endif %}
+        
+      {% endif %}
+
+    </div>
+</section>
+{% endblock table %}

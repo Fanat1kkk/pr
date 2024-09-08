@@ -1,0 +1,197 @@
+{% extends 'my_site/base.html' %}
+{% load static %}
+
+{% block header_info %}
+<div class="main_screen text-center mb-5">
+  <h4>Продвижение в социальных сетях</h4>
+  <h3 class="screen_text mt-3">Качественно, быстро с гарантией.</h3>
+  <div class="social mt-4">
+    <div class="social_head">
+      <p>Ежедневные купоны с балансом в нашем сообществе ВКонтакте</p>
+    </div>
+    <div class="d-flex justify-content-center">
+      <div class="vk me-3">
+        <a class="d-flex align-items-center" href="https://vk.com/toppr_smm" target="_blank">
+          <img src="{% static 'my_site/img/vk.svg' %}" alt="vk">
+          <p class="ms-1">@toppr_smm</p>
+        </a>
+      </div>
+
+      <!-- <div class="tg">
+        <a class="d-flex align-items-center" href="https://t.me/top_piar_support" target="_blank">
+          <img src="{% static 'my_site/img/telegram.svg' %}" alt="telegram">
+          <p class="ms-1">@top_piar_support</p>
+        </a>
+      </div> -->
+    </div>
+  </div>
+</div>
+{% endblock header_info %}
+
+{% block price %}
+<div class="main_pr">
+  <div class="container">
+    <div class="pr_items">
+      <div class="row justify-content-center">
+        <div class="col-9 col-sm-7 col-md-7 col-lg-4">
+          {% for category in categories %}
+            <div class="pr_item">
+              <div class="pr_active" data-bs-toggle="collapse" href="#collapse{{ forloop.counter }}" role="button" aria-expanded="false" aria-controls="collapse3">
+                <div class="icon">
+                  <img src="{% static 'my_site/img/' %}{{ category.get_img_display }}" alt="telegram">
+                </div>
+                <p>{{ category.cat_name }}</p>
+                <div class="check">
+                  <img src="{% static 'my_site/img/check.svg' %}" alt="check">
+                </div>
+              </div>
+              <div class="collapse" id="collapse{{ forloop.counter }}">
+                <div class="pr_block">
+                  {% for sub_cat in category.sub_cat.all %}
+                  <a href="#" data-bs-toggle="modal" data-bs-target="#orderModal" data-bs-whatever="{{ sub_cat.name }} {{ category.cat_name }}" data-cat-id="{{ category.pk }}" data-sub-id="{{ sub_cat.pk }}">
+                    <div class="pr__block_item">
+                      <div class="icon">
+                        <img src="{% static 'my_site/img/' %}{{ sub_cat.get_img_display }}" alt="user">
+                      </div>
+                      <p>{{ sub_cat.name }}</p>
+                    </div>
+                  </a>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% if not user.is_authenticated %}
+<div class="info_center mt-3 text-center">
+  <p>За не выполненые заказы средства зачисляются на ваш баланс.
+   <br> Указывайте верный емаил адрес на него прейдёт пароль для авторизации</p>
+</div>
+{% endif %}
+<div class="mt-3 mb-2 text-center screen_text">
+  <p>Для связи:</p>
+</div>
+<div class="d-flex justify-content-center">
+  <div class="vk me-3">
+    <a class="d-flex align-items-center" href="https://vk.com/topprru" target="_blank">
+      <img src="{% static 'my_site/img/vk.svg' %}" alt="vk">
+      <p class="ms-1">@topprru</p>
+    </a>
+  </div>
+
+  <div class="tg">
+    <a class="d-flex align-items-center" href="https://t.me/topprru" target="_blank">
+      <img src="{% static 'my_site/img/telegram.svg' %}" alt="telegram">
+      <p class="ms-1">@topprru</p>
+    </a>
+  </div>
+</div>
+{% endblock price %}
+
+{% block modal %}
+<!-- Модальное окно офформления заказа -->
+<div class="container">
+  <div class="row col-12">
+    <div class="modal fade" id="orderModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <img src="" alt="" class="modalTitleImg">
+            <h5 class="modal-title m-auto" id="staticBackdropLabel">
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body" id="order-form">
+            <div id="forma-order-create">
+              <form action="{% url 'new_order' %}" method="POST" id="order" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="row g-3">
+                  <div class="ml-3 mr-3">
+                    <label for="{{ form.service.id_for_label }}" class="col-form-label">Выберите тариф</label>
+                    {{ form.service }}
+                    <div class="invalid-feedback" id="service_error"></div>
+                  </div>
+                  <div class="ml-3 mr-3">
+                    <div class="d-flex flex-column">
+                      <div class="d-flex service_info mb-2 flex-column flex-sm-row">
+                        <div id="id-speed" class="me-2">
+                          Скорость: 
+                        </div>
+                        <div id="id-quality">
+                          Качество: 
+                        </div>
+                      </div>
+                      <div class="text-muted" id="service-info-text">
+                        
+                      </div>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <div class="row align-items-center mb-3">
+                      <div class="col-6">
+                        <label for="{{ form.count.id_for_label }}" class="col-form-label">Укажите количество</label>
+                        {{ form.count }}
+                        <div class="invalid-feedback" id="count_error"></div>
+                      </div>
+                      <p class="price_text col-3 text-start mt-3 pt-4 text-muted" id="price">0 руб</p>
+                    </div>
+                    <div>
+                      <label for="{{ form.task_url.id_for_label }}" class="col-form-label">Укажите ссылку</label>
+                      {{ form.task_url }}
+                      <div class="invalid-feedback" id="task_url_error"></div>
+                    </div>
+                    {% if user.is_authenticated %}
+                    <div>
+                      <input type="hidden" name="email" value="{{ user.email }}">
+                    </div>
+                    {% else %}
+                    <div>
+                      <label for="{{ form.email.id_for_label }}" class="col-form-label">
+                        На почту придёт пароль и ссылка для отслеживания заказов
+                      </label>
+                      {{ form.email }}
+                      <div class="invalid-feedback" id="email_error"></div>
+                    </div>
+                    {% endif %}
+                    <div>
+                      <div class="ml-3 mr-3">
+                        <label for="{{ form.pay_provider.id_for_label }}" class="col-form-label">Выбирите способ оплаты</label>
+                        {{ form.pay_provider }}
+                      <div class="invalid-feedback" id="pay_provider_error"></div>
+                    </div>
+                    <div class="row">
+                      <div class="col-4">
+                        <label for="{{ form.promocode.id_for_label }}" class="col-form-label">Промо код</label>
+                        {{ form.promocode }}
+                        <div class="invalid-feedback" id="promocode_error"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                  <button type="button" class="btn btn-primary" id="btn-create-order">
+                    <span id="btn-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden></span>
+                    Продолжить
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div id="order-confirm-form">
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{% static 'my_site/js/modal_form.js' %}"></script>
+{% endblock modal %}
+
+
+

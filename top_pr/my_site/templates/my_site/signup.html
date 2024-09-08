@@ -1,0 +1,32 @@
+<form method="POST", action="{% url 'my_signup' %}" id="form-signup" class="">
+    {% csrf_token %}
+    <!-- {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+    {% endif %} -->
+    <div class="alert alert-warning d-none" role="alert" id="login-alert">
+        Не верный емаил или пароль.
+    </div>
+    <div class="mb-3">
+        <label for="{{ form_signup.email.id_for_label }}" class="form-label">Адрес электронной почты</label>
+        <!-- <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp"> -->
+        {{ form_signup.email }}
+        <div class="invalid-feedback" id="email_error"></div>
+    </div>
+    <div class="mb-3">
+        <label for="{{ form_signup.password1.id_for_label }}" class="form-label">Пароль</label>
+        {{ form_signup.password1 }}
+        <div class="invalid-feedback" id="password1_error"></div>
+    </div>
+    <div class="mb-3">
+        <label for="{{ form_signup.password2.id_for_label }}" class="form-label">Пароль ещё раз</label>
+        {{ form_signup.password2 }}
+        <div class="invalid-feedback" id="password2_error"></div>
+    </div>
+    <div class="form-row mb-3">
+        <button type="button" class="btn btn-primary col-12" id="btn-signup">Регистрация</button>
+    </div>
+    <p class="mb-1">Есть аккаунт?</p>
+    <div class="form-row">
+        <button type="button" class="btn btn-success col-12" id="btn-s-login">Войти</button>
+    </div>
+</form>

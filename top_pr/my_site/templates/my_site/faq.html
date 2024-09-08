@@ -1,0 +1,91 @@
+{% extends 'my_site/base.html' %}
+{% load static %}
+
+{% block faq %}
+
+
+<div class="container">
+    <div class="text-center mb-4">
+        <h2 class="main_screen mb-2">Популярные вопросы</h2>
+        <p>Если не нашли ответ на свой вопрос,
+        <a href="javascript:jivo_api.open();">напишите нам.</a></p>
+    </div>
+    <div class="pr_items">
+        <div class="row justify-content-center">
+            <div class="col-11 col-sm-9 col-md-9 col-lg-6">
+                <div class="pr_item">
+                    <div class="pr_active faq_active" data-bs-toggle="collapse" href="#collapse1" role="button"
+                        aria-expanded="false" aria-controls="collapse1">
+                        <p>Что делать, если я неправильно ввёл ссылку при оформлении заказа?</p>
+                        <div class="check">
+                            <img src="{% static 'my_site/img/check.svg' %}" alt="check">
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapse1">
+                        <div class="pr_block p-2">
+                            <p>Если ссылка была недействительная - заказ не будет выполнен и средства вернутся на баланс Вашего аккаунта автоматически. Если ссылка была действительной и заказ был выполнен, то вернуть средства за заказ непредоставляется возможным.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="pr_item">
+                    <div class="pr_active faq_active" data-bs-toggle="collapse" href="#collapse5" role="button"
+                        aria-expanded="false" aria-controls="collapse5">
+                        <p>Какие гарантии?</p>
+                        <div class="check">
+                            <img src="{% static 'my_site/img/check.svg' %}" alt="check">
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapse5">
+                        <div class="pr_block p-2">
+                            <p>Мы добросовестно выполняем все заказы. Если сомневаетесь, начните с минимального заказа от 2 рублей</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="pr_item">
+                    <div class="pr_active faq_active" data-bs-toggle="collapse" href="#collapse2" role="button"
+                        aria-expanded="false" aria-controls="collapse2">
+                        <p>Могу ли я сделать заказ без регистрации?</p>
+                        <div class="check">
+                            <img src="{% static 'my_site/img/check.svg' %}" alt="check">
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapse2">
+                        <div class="pr_block p-2">
+                            <p>Конечно. Вы сможете отслеживать все свои заказы в разделе <a href="{% url 'orders' %}">"Мои заказы"</a>. Так же после офформления первого заказа на указанный Вами Email будет отправлен пароль для авторизации.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="pr_item">
+                    <div class="pr_active faq_active" data-bs-toggle="collapse" href="#collapse3" role="button"
+                        aria-expanded="false" aria-controls="collapse3">
+                        <p>Как отслеживать выполнение заказа?</p>
+                        <div class="check">
+                            <img src="{% static 'my_site/img/check.svg' %}" alt="check">
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapse3">
+                        <div class="pr_block p-2">
+                            <p>Отслеживать свои заказы Вы сможете в разделе <a href="{% url 'orders' %}">"Мои заказы"</a>.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="pr_item">
+                    <div class="pr_active faq_active" data-bs-toggle="collapse" href="#collapse4" role="button"
+                        aria-expanded="false" aria-controls="collapse4">
+                        <p>Как быстро мой заказ будет выполнен?</p>
+                        <div class="check">
+                            <img src="{% static 'my_site/img/check.svg' %}" alt="check">
+                        </div>
+                    </div>
+                    <div class="collapse" id="collapse4">
+                        <div class="pr_block p-2">
+                            <p>Заказ выполняется в среднем от нескольких минут до нескольких часов, время старта зависит от услуги и объема заказа. Если заказ не будет выполнен, оплаченные средства вернутся к Вам на баланс в личном кабинете.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock faq %}

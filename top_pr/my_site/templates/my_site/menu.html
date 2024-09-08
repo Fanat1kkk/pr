@@ -1,0 +1,39 @@
+{% load static %}
+
+<div class="d-flex flex-column align-items-center mb-3 mt-4">
+    <a href="/" class="mb-3">
+      <img class="header__logo" src="{% static 'my_site/img/logo.png' %}" alt="logo">
+    </a>
+    {% if request.get_full_path == '/profile/' %}
+        <p><a class="nav-link fffff" href="/">Заказать</a></p>
+        <p><a class="nav-link fffff" href="{% url 'orders' %}">Мои заказы</a></p>
+        <p><a class="nav-link fffff" href="{% url 'faq' %}">Помощь</a></p>
+    {% elif request.get_full_path == '/orders/' %}
+        <p><a class="nav-link fffff" href="/">Заказать</a></p>
+        {% if user.is_authenticated %}
+        <a class="nav-link fffff" href="{% url 'profile' %}">Профиль</a>
+        {% endif %}
+        <p><a class="nav-link fffff" href="{% url 'faq' %}">Помощь</a></p>
+    {% else %}
+        <p><a class="nav-link fffff" href="{% url 'orders' %}">Мои заказы</a></p>
+        {% if user.is_authenticated %}
+        <a class="nav-link fffff" href="{% url 'profile' %}">Профиль</a>
+        {% endif %}
+        <p><a class="nav-link fffff" href="{% url 'faq' %}">Помощь</a></p>
+    {% endif %}
+    {% if user.is_staff %}
+        <p><a class="nav-link fffff" href="http://127.0.0.1:8000/tema57486/">Админка</a></p>
+    {% endif %}
+
+
+    <p>
+        {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'account_logout' %}" id="nav-logout">
+        {% csrf_token %}
+        <a class="nav-link fffff" href="" id="nav-logout-link">Выйте</a>
+        </form>
+        {% else %}
+        <a class="nav-link fffff" href="" id="nav-login">Войти/Регистрация</a>
+        {% endif %}
+    </p>
+</div>

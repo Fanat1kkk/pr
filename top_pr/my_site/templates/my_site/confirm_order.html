@@ -1,0 +1,44 @@
+
+  <form action="{% url 'pay' %}" method="POST">
+    {% csrf_token %}
+    {{ order_form.order_id }}
+    <div class="row g-3">
+      <div class="row align-items-center mb-3">
+        <div class="mt-3 text-danger">Внимание! Не закрывайте данное окно, после успешной оплаты здесь будет ссылка для отслеживания задания.</div>
+        <div class="col-6">
+          Товар:
+        </div>
+        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.service }}</p>
+      </div>
+      <div class="row align-items-center mb-3">
+        <div class="col-6">
+          Кол-во: 
+        </div>
+        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.count }}</p>
+      </div>
+      <div class="row align-items-center mb-3">
+        <div class="col-6">
+          Цена: 
+        </div>
+        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.price|floatformat:2 }}</p>
+      </div>
+      <div class="row align-items-center mb-3">
+        <div class="col-6">
+          Номер заказа : 
+        </div>
+        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.order_id }}</p>
+      </div>
+      <div class="row align-items-center mb-3">
+        <div class="col-6">
+          Способ оплаты : 
+        </div>
+        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.transaction.get_pay_provider_display }}</p>
+      </div>
+    </div>
+    <div class="modal-footer d-flex justify-content-between">
+      <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button> -->
+      <div class="text-danger col-3 col-lg-5" id="checked-error"></div>
+      <button type="button" class="btn btn-primary col-5 col-lg-5" data-order-id="{{ order.order_id }}" data-type="pay" id="pay">Оплатить</button>
+    </div>
+  </form>
+
