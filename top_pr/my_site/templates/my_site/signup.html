@@ -1,8 +1,8 @@
 <form method="POST", action="{% url 'my_signup' %}" id="form-signup" class="">
     {% csrf_token %}
-    <!-- {% if redirect_field_value %}
+    {% comment %} {% if redirect_field_value %}
     <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-    {% endif %} -->
+    {% endif %} {% endcomment %}
     <div class="alert alert-warning d-none" role="alert" id="login-alert">
         Не верный емаил или пароль.
     </div>

@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-8fr+g2#o^1&09fvdh&^zh58brlm_#yt$%hd=)y)()-+4ycdr2s
 DEBUG = True
 
 ALLOWED_HOSTS = ['*', '127.0.0.1', 'top-pr.ru', 'www.top-pr.ru']
-CSRF_TRUSTED_ORIGINS = ['https://top-pr.ru', 'https://www.top-pr.ru']
+# CSRF_TRUSTED_ORIGINS = ['https://top-pr.ru', 'https://www.top-pr.ru']
 
 
 # Application definition
@@ -64,7 +64,6 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'top_pr.urls'
-print(BASE_DIR)
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -158,13 +157,14 @@ AUTH_USER_MODEL = 'my_site.Client'
 REDIS_HOST = 'localhost'
 REDIS_PORT = '6379'
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600} 
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
 CELERY_TIMEZONE = TIME_ZONE
 
 
 # Djnago-allauth
 
 SITE_ID = 1
+ACCOUNT_EMAIL_UNKNOWN_ACCOUNTS = False
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = '[https://top-pr.ru/]'
 LOGIN_REDIRECT_URL = '/'
