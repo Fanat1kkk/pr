@@ -67,6 +67,25 @@ def update_status_orders():
             data_task = data_tasks[order_id]
             db_task.update_task(data_task)
 
+
+@shared_task
+def send_email_register_user(email: str):
+    text = f'''
+
+    Вы успешно зарегистрировались на сайте {settings.BASE_URL}.
+    
+    Мы подготовили специально для вас промокод со скидкой 10% на первый заказ. Активировать его вы сможете при оформлении заказа.
+    
+    ВАШ ПРОМОКОД: reg10
+
+    Контакты: 
+    Telegram - https://t.me/topprru
+    ВКонтакте - https://vk.com/topprru
+    '''
+
+    send_mail(subject=f'Регистрация на {settings.BASE_URL}', message=text, from_email=settings.EMAIL_HOST_USER, 
+              recipient_list=[email])
+
 @shared_task
 def send_email(subject, message, recipient_list):
     send_mail(subject=subject, message=message, from_email=settings.EMAIL_HOST_USER, 

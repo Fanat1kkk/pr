@@ -16,7 +16,7 @@ from .models import Category, Order, Service, CustomerReview
 from .forms import OrderForm, ConfirmOrderForm, MyLogInForm, MySignupForm, PayProfileForm, MyResetPasswordKeyForm, CommentForm
 from .utils import del_zero
 from .exceptions import BalanceException
-from .tasks import cancel_order
+from .tasks import cancel_order, send_email_register_user
 
 
 def is_ajax(request):
@@ -53,6 +53,8 @@ class AjaxSignupView(SignupView):
         form = self.get_form(form_class)
         if form.is_valid():
             response = self.form_valid(form)
+            email = form.cleaned_data['email']
+            send_email_register_user(email=email)
             return JsonResponse({'location': response.url})
         else:
             return JsonResponse({'errors': form.errors, 'errors_non_fields': form.non_field_errors()})

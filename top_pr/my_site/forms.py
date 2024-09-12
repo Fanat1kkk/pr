@@ -185,7 +185,6 @@ class OrderForm(forms.ModelForm):
             promocode.activate()
         order.order_id = order.gen_order_id()
         order.calc_price(save=False)
-        print(f'order.price: {order.price}')
         
         order.save()
         pm.create_pay(order=order, pay_provider=pay_provider)

@@ -3,12 +3,14 @@ import random
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.db import models
+from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.exceptions import ObjectDoesNotExist
 
 from allauth.utils import generate_unique_username
 from allauth.account.models import EmailAddress
+from ckeditor.fields import RichTextField
 
 from .utils import del_zero, generate_password
 from .exceptions import BalanceException
@@ -79,9 +81,13 @@ class ClientManager(UserManager):
 
                 from .tasks import send_email
                 text = f'''
-                Здравствуйте!!!
+                Поздравляем с оформлением вашего первого заказа на {settings.BASE_URL}!
+                
+                Мы создали для вас аккаунт для того чтоб вам было удобнее пользоваться нашим сервисом.
+                Так-же специально для вас мы подготовили промокод 10% на следующий заказ - reg10
 
                 Ваш пароль: {password}
+                Ваш промокод: reg10
 
                 В случаи не выполнения заказа по какой либо из причин, средства будут начислены на ваш баланс.
 
@@ -89,7 +95,7 @@ class ClientManager(UserManager):
                 Telegram - https://t.me/topprru
                 ВКонтакте - https://vk.com/topprru
                 '''
-                send_email.delay('Ваш пароль https://top-pr.ru/', text, 
+                send_email.delay(f'Ваш пароль {settings.BASE_URL}', text, 
                                   recipient_list=[email])
                 
         return user
@@ -201,7 +207,7 @@ class Service(models.Model):
     speed = models.IntegerField(verbose_name='Скорость накрутки', default=5)
     #Оценка качества
     quality = models.IntegerField(verbose_name='Качество', default=5)
-    text_info = models.TextField(verbose_name='Инфо', max_length=250, null=True, blank=True)
+    text_info = RichTextField(verbose_name='Инфо', max_length=700, null=True, blank=True)
     # Цена за 1000 штук
     price = models.DecimalField(verbose_name='Цена за 1000 шт.', max_digits=8, decimal_places=2)
     percent = models.IntegerField(verbose_name='Процент накрутки', default=50)
