@@ -10,10 +10,12 @@ top_pr/test.html
 top_pr/start_gunicorn.sh
 top_pr/.env
 .req.txt
-*.pyc
-__pycache__/
-# Игнорировать все миграции во всех приложениях
-*/migrations/*
+# Игнорировать все папки __pycache__ и их содержимое
+**/__pycache__/
+**/*.py[cod]
 
-# Исключить из игнорирования __init__.py
-!*/migrations/__init__.py
+# Игнорировать все файлы миграций
+**/migrations/*
+
+# Но не игнорировать файл __init__.py в папке migrations
+!**/migrations/__init__.py
