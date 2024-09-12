@@ -22,7 +22,7 @@
         <p><a class="nav-link fffff" href="{% url 'faq' %}">Помощь</a></p>
     {% endif %}
     {% if user.is_staff %}
-        <p><a class="nav-link fffff" href="http://127.0.0.1:8000/tema57486/">Админка</a></p>
+        <p><a class="nav-link fffff" href="{{ base_url }}/tema57486/">Админка</a></p>
     {% endif %}
 
 

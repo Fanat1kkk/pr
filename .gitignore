@@ -2,3 +2,11 @@ env
 .vscode
 top_pr/test.py
 top_pr/test_redis.py
+top_pr/db.sqlite3
+top_pr/celerybeat-schedule
+top_pr/dump.rdb
+top_pr/start_gunicorn.sh
+top_pr/test.html
+top_pr/start_gunicorn.sh
+top_pr/.env
+.req.txt

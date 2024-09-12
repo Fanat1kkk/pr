@@ -85,6 +85,7 @@ def index(request):
         'form': form,
         'form_login': form_login,
         'form_signup': form_signup,
+        'base_url': settings.BASE_URL,
     }
     return render(request=request, template_name='my_site/index.html', context=context)
 
@@ -95,6 +96,7 @@ def faq(request):
     context = {
         'form_login': form_login,
         'form_signup': form_signup,
+        'base_url': settings.BASE_URL,
     }
     return render(request=request, template_name='my_site/faq.html', context=context)
 
@@ -125,6 +127,7 @@ def profile(request):
     context = {
         'form_login': form_login,
         'form_signup': form_signup,
+        'base_url': settings.BASE_URL,
     }
     if request.method == 'GET':
         cupon_form = CuponForm()
@@ -168,12 +171,15 @@ def table_orders(request):
             # Условие необходимо для добавления в контекст 'orders'
             # Так как в шаблоне отобраается таблица только если есть 'orders'
             if len(orders) > 0:
-                return render(request=request, template_name='my_site/orders.html', context={'orders': orders, 'email': request.user.email})
+                return render(request=request, template_name='my_site/orders.html', context={'orders': orders, 
+                                                                                             'email': request.user.email,
+                                                                                             'base_url': settings.BASE_URL})
     form_login = MyLogInForm()
     form_signup = MySignupForm()
     context = {
         'form_login': form_login,
         'form_signup': form_signup,
+        'base_url': settings.BASE_URL,
     }
     return render(request=request, template_name='my_site/orders.html', context=context)
 
@@ -184,6 +190,7 @@ def sort_orders(request):
     context = {
         'form_login': form_login,
         'form_signup': form_signup,
+        'base_url': settings.BASE_URL,
     }
 
     if request.method == 'GET':
@@ -256,10 +263,7 @@ def AJAX_checked_pay(request):
             print(order.order_id)
             print(order.is_paid)
             if order.is_paid:
-                if settings.DEBUG:
-                    url = 'http://127.0.0.1:8000/'
-                else:
-                    url = 'https://top-pr.ru/'
+                url = settings.BASE_URL
                 return JsonResponse({'redirect': f'{url}orders/search?email={order.email}'})
             else:
                 return JsonResponse({'error': 'Оплата еще не дошла до нас, попробуйте еще раз.'})
@@ -403,7 +407,8 @@ def add_comment(request, order_id: int):
                     
                 context = {'form': form,
                             'order': order,
-                            'order_id': order_id}
+                            'order_id': order_id,
+                            'base_url': settings.BASE_URL}
                 return render(request=request, template_name='my_site/comment.html', context=context)
         except (Order.DoesNotExist):
                 pass
