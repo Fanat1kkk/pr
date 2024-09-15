@@ -24,10 +24,11 @@ class ProviderPay():
     YOOM = 'YOOM'
     PRF = 'PRF'
 
-    PROVIDERS = [(FREC, 'FreeCassa'),
-                 (YOOM, 'Yoommany'),
-                 (PRF, 'Баланс'),
-                ]
+    PROVIDERS = [
+        # (FREC, 'FreeCassa'),
+        (YOOM, 'Yoommany'),
+        (PRF, 'Баланс'),
+    ]
                 
 class TransactionManager(models.Manager):
     
