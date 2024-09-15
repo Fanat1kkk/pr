@@ -207,7 +207,7 @@ class Service(models.Model):
     speed = models.IntegerField(verbose_name='Скорость накрутки', default=5)
     #Оценка качества
     quality = models.IntegerField(verbose_name='Качество', default=5)
-    text_info = RichTextField(verbose_name='Инфо', max_length=700, null=True, blank=True)
+    text_info = RichTextField(verbose_name='Инфо', null=True, blank=True)
     # Цена за 1000 штук
     price = models.DecimalField(verbose_name='Цена за 1000 шт.', max_digits=8, decimal_places=2)
     percent = models.IntegerField(verbose_name='Процент накрутки', default=50)
