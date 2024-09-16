@@ -115,6 +115,35 @@ else:
         'PORT': config('DB_PORT'),          # Порт базы данных (обычно 5432)
     }
 }
+    
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(BASE_DIR, 'debug.log'),
+        },
+        'console': {
+            'level': 'INFO',  # Уровень логов, которые будут выводиться в консоль
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],  # Добавляем консольный вывод
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'my_site': {  # Логгер для вашего приложения
+            'handlers': ['console'],  # Добавляем консольный вывод
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
 
 
 # Password validation

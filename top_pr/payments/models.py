@@ -99,7 +99,7 @@ class Transaction(models.Model):
         '''
         Подверждения платежа для пополнения баланса
         '''
-        self.client.add_balance(sum = self.sum, comment=f'Пополнение: {self.sum}')
+        self.client.add_balance(sum = self.sum, comment=f'Пополнение: {self.sum} р.')
 
     def _paid_order(self):
         '''

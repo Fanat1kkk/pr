@@ -1,5 +1,6 @@
 {% extends 'my_site/base.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block title %}Профиль{% endblock title %}
 
@@ -10,7 +11,7 @@
         <div class="text-start lk-title">
             <div class="mb-2">Email:  <span class="lk-title-v">{{ user.email }}</span></div>
             <div class="mb-2">ID:  <span class="lk-title-v">{{ user.get_id }}</span></div>
-            <div class="mb-2">Ваш баланс:  <span class="lk-title-v">{{ user.get_balance }} руб.</span> </div>
+            <div class="mb-2">Ваш баланс:  <span class="lk-title-v">{{ user.get_balance|format_decimal }} руб.</span> </div>
         </div>
     </div>
 

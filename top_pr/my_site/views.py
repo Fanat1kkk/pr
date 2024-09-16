@@ -262,8 +262,6 @@ def AJAX_checked_pay(request):
             return JsonResponse({'error': 'error None'})
         try:
             order = Order.objects.get(order_id=order_id)
-            print(order.order_id)
-            print(order.is_paid)
             if order.is_paid:
                 url = settings.BASE_URL
                 return JsonResponse({'redirect': f'{url}orders/search?email={order.email}'})
@@ -344,16 +342,16 @@ def AJAX_get_services(request, cat_id, sub_id):
         for service in services:
             data_s.update({service.pk: {
                 'name': service.name,
-                'price': '%.2f' % service.price_per_one()
+                'price': del_zero(service.price_per_one())
             }})
-
-        service = services[0]
         data.update({'data_s': data_s})
-        data.update({'service_info': {'speed': service.speed, 
-                                      'quality': service.quality, 
-                                      'text': service.text_info,
-                                      'is_cancellation': service.is_cancellation}
-                    })
+        if len(services) > 0:
+            service = services[0]
+            data.update({'service_info': {'speed': service.speed, 
+                                        'quality': service.quality, 
+                                        'text': service.text_info,
+                                        'is_cancellation': service.is_cancellation}
+                        })
 
         return JsonResponse(data=data)
     Http404('Page not found')

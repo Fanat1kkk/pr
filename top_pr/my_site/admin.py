@@ -51,10 +51,10 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ['name', 'full_name', 'price_d', 'price_per_one_d', 'order_complite', 'service_id', 'provider_service_id', 'provider', 'is_published']
     
     def price_d(self, obj: Service):
-        return f'{obj.price} / {obj.price_per_one()*1000}'
+        return f'{del_zero(obj.price)} / {del_zero(obj.price_per_one()*1000)}'
 
     def price_per_one_d(self, obj: Service):
-        return f'{obj.price/1000} / {obj.price_per_one()}'
+        return f'{del_zero(obj.price/1000)} / {del_zero(obj.price_per_one())}'
     
     def order_complite(self, obj: Service):
         

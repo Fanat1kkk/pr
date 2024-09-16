@@ -1,3 +1,4 @@
+{% load custom_filters %}
 
   <form action="{% url 'pay' %}" method="POST">
     {% csrf_token %}
@@ -20,7 +21,7 @@
         <div class="col-6">
           Цена: 
         </div>
-        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.price|floatformat:2 }}</p>
+        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.price|format_decimal }} р.</p>
       </div>
       <div class="row align-items-center mb-3">
         <div class="col-6">

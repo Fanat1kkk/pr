@@ -31,7 +31,7 @@ class PayBaseProvider:
 
     def create_pay_profile(self, price: Decimal, client):
         unic_id = self._gen_tr_id()
-        price = del_zero(price)
+        price = price
         sign = self.sign(price, unic_id)
         self.redirect = self._pay_url(price=price, unic_id=unic_id)
         print('redirect: ', self.redirect)
@@ -40,7 +40,7 @@ class PayBaseProvider:
 
     def create_pay(self, order: Order):
         unic_id = self._gen_tr_id()
-        price = del_zero(order.price)
+        price = order.price
         sign = self.sign(price=price, unic_id=unic_id)
         self.redirect = self._pay_url(price, unic_id)
         Transaction.objects.create(order=order, unic_id=unic_id, sum=price, client=order.client, pay_provider=self.name, sign=sign, pay_url=self.redirect)
@@ -67,7 +67,7 @@ class PayFreeCassa(PayBaseProvider):
 
     def create_pay_profile(self, price: Decimal, client):
         unic_id = self._gen_tr_id()
-        price = del_zero(price)
+        price = price
         sign1 = self.sign(price, unic_id)
         sign2 = self.sign2(price, unic_id)
         self.redirect = self._pay_url(price=price, unic_id=unic_id, email=client.email, sign=sign1)
@@ -75,7 +75,7 @@ class PayFreeCassa(PayBaseProvider):
 
     def create_pay(self, order: Order):
         unic_id = self._gen_tr_id()
-        price = del_zero(order.price)
+        price = order.price
         sign1 = self.sign(price, unic_id)
         sign2 = self.sign2(price, unic_id)
         self.redirect = self._pay_url(price=price, unic_id=unic_id, email=order.client.email, sign=sign1)
@@ -180,9 +180,9 @@ class PayProfileProvider(PayBaseProvider):
     
 
     def create_pay(self, order: Order):
-        price = del_zero(order.price)
+        price = order.price
         unic_id = self._gen_tr_id()
-        sign = self.sign(del_zero(order.price), order.order_id, secret=self.secret)
+        sign = self.sign(order.price, order.order_id, secret=self.secret)
         self.redirect = self._pay_url(order, sign)
         Transaction.objects.create(unic_id=unic_id, sum=price, order=order, client=order.client, pay_provider=self.name, sign=sign, pay_url=self.redirect)
 

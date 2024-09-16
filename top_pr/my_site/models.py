@@ -1,5 +1,6 @@
 
 import random
+import logging
 from decimal import Decimal, ROUND_HALF_UP
 
 from django.db import models
@@ -15,6 +16,8 @@ from ckeditor.fields import RichTextField
 from .utils import del_zero, generate_password
 from .exceptions import BalanceException
 
+
+logger = logging.getLogger('my_site')
 
 SUBCATEGORIES = (
     ('SUB', 'Подписчики'),
@@ -102,7 +105,7 @@ class ClientManager(UserManager):
 
 
 class Client(AbstractUser):
-    balance = models.DecimalField(verbose_name='Баланс', max_digits=8, decimal_places=2, default=0)
+    balance = models.DecimalField(verbose_name='Баланс', max_digits=8, decimal_places=3, default=0)
     date_last_active = models.DateTimeField(verbose_name='Дата последней активности', auto_now=True)
 
     objects: ClientManager = ClientManager()
@@ -113,16 +116,14 @@ class Client(AbstractUser):
 
     def add_balance(self, sum: Decimal, comment: str = None,  save: bool=True):
         self.balance += sum
-
         BalanceTransaction.objects.create(client=self, sum=sum, operation=BalanceTransaction.A, comment=comment)
 
         if save:
             self.save()
+            logger.info(f'{self.email} пополнил баланс на {del_zero(sum)}:({comment})')
         
 
     def remove_balance(self, sum: Decimal, comment: str = None, save: bool=True):
-        print(self.username, '\n', self.email)
-        print('self.balance: ', self.balance , '\n', 'sum: ', sum)
         if self.balance < sum:
             raise BalanceException('Не достаточно средст на балансе')
         self.balance -= sum
@@ -134,7 +135,7 @@ class Client(AbstractUser):
 
     @property
     def get_balance(self):
-        return del_zero(self.balance)
+        return self.balance
     
 
     def email_verified(self):
@@ -220,9 +221,9 @@ class Service(models.Model):
         '''
         Возвращает цену за 1 штуку с учетом накрученных процентов
         '''
-        r = (Decimal('1') + Decimal(self.percent) / Decimal('100')) * (self.price / Decimal('1000'))
-        return r.quantize(Decimal('0.00'), rounding=ROUND_HALF_UP)
-
+        # r = (Decimal('1') + Decimal(self.percent) / Decimal('100')) * (self.price / Decimal('1000'))
+        return (((self.price / Decimal('100')) * self.percent) + self.price) / 1000
+        
     def full_name(self):
         return f'{self.sub_cat.name} {self.category.cat_name}'
 
@@ -354,7 +355,7 @@ class Order(ABSOrderTask):
         Task.create_task(order=self)
 
         self.save()
-        
+        logger.info(f'{self.client.email} оплатил заказ {self.order_id}')
         return True
 
 
@@ -367,14 +368,6 @@ class Order(ABSOrderTask):
 
         if save:
             self.save()
-
-        # if update_tasks:
-        #     for task in self.tasks:
-        #         task.status = status
-        #         task.save()
-        
-        # self.status = status
-        # self.save()
 
     def gen_order_id(self):
         # Генерирует ID заказа
@@ -393,10 +386,6 @@ class Order(ABSOrderTask):
         # Если активный промокод
         if self.promocode:
             price = self.promocode.calc(price)
-            
-        print('-'*10)
-        print(f'self.price: {self.price}\nprice: {price}')
-        print('-'*10)
         # Запись в БД если цена изменилась
         if self.price != price:
             self.price = price
@@ -418,7 +407,8 @@ class Order(ABSOrderTask):
         return price*self.end_count
 
     def get_price_end_count_from_display(self) -> Decimal:
-        return del_zero(self.get_price_end_count())
+        r = self.get_price_end_count()
+        return r
 
     def to_dict(self) -> dict:
         return {
@@ -486,8 +476,10 @@ class Task(ABSOrderTask):
         ''' Изменяет статус задания, если провайдер вернул ошибку '''
         self.error_pr = error_text
         self.is_error = True
-        self.save()
-        self.order.set_status(self.CANC, save=True)
+        self._set_status(status=self.CANC, save=True, order_save=True)
+        self.return_balance()
+        # self.save()
+        # self.order.set_status(self.CANC, save=True)
 
     def provider_ok(self, order_id: int) -> None:
         self.provider_order_id = order_id
@@ -500,15 +492,12 @@ class Task(ABSOrderTask):
         '''
         remains = self.count - self.end_count
         price = self.order.get_price_per_one()
-        print('Возврат: ', price*remains)
         self.order.client.add_balance(price*remains, comment=f'Возврат заказ: {self.order.order_id}')
 
 
     def update_task(self, data_from_provider: dict):
-        print('data: ', data_from_provider)
         flag_save_task = False
         flag_save_order = False
-
         # Обновление Task
         if self.start_count == 0:
             flag_save_task = True
@@ -519,7 +508,6 @@ class Task(ABSOrderTask):
             self.end_count = self.count - data_from_provider['remains']
             flag_save_order = True
             self.order.end_count = self.end_count
-
         if self.status != data_from_provider['status']:
             flag_save_task = True
             flag_save_order = True

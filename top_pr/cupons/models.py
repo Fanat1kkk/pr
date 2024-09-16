@@ -13,7 +13,7 @@ class Cupon(models.Model):
                                    help_text='4000+ID для кого предназначен купон')
     code = models.CharField(verbose_name='Код', max_length=7, unique=True)
     bonus = models.DecimalField(
-        verbose_name='Бонус', max_digits=8, decimal_places=2)
+        verbose_name='Бонус', max_digits=8, decimal_places=3)
     max_uses = models.IntegerField(
         verbose_name='Максимальное кол-во гошений', default=1)
     current_uses = models.IntegerField(

@@ -9,6 +9,8 @@ top_pr/start_gunicorn.sh
 top_pr/test.html
 top_pr/start_gunicorn.sh
 top_pr/.env
+debug.log
+dump.rdb
 .req.txt
 # Игнорировать все папки __pycache__ и их содержимое
 **/__pycache__/

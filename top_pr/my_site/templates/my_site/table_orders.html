@@ -1,4 +1,5 @@
 {% load static %}
+{% load custom_filters %}
 
 <div class="table_orders">
 	<h2 class="text-center mt-2">Ваши заказы</h2>
@@ -53,7 +54,7 @@
 								<td><a href="{{ order.task_url }}">Ссылка</a></td>
 								<td>{{ order.start_count }}</td>
 								<td>{{ order.end_count }}/{{ order.count }}</td>
-								<td>{{ order.price }}</td>
+								<td>{{ order.price|format_decimal }}</td>
 								<td>{{ order.get_price_end_count_from_display }}</td>
 								<td id="td_status_{{ order.order_id }}">{{ order.get_status_display }}</td>
 								<td class="text-center" id="td_btn_{{ order.order_id }}">

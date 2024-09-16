@@ -33,8 +33,6 @@ class Provider:
     def _send_request(self):
         self.params.update({self.key_name: self.key})
         sleep(self.time_limit)
-        print('urls: ', self.url)
-        print('params: ', self.params)
         with Provider.client.post(url=self.url, params=self.params) as resp:
             return resp.json()
         
