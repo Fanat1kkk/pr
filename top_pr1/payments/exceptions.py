@@ -1,0 +1,2 @@
+class NotMoneyBalanceExteption(Exception):
+    pass

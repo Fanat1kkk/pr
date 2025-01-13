@@ -1,0 +1,64 @@
+{% extends 'lk/base_profile.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block header_main %}Пополнение баланса{% endblock header_main %}
+{% block content %}
+    <div class="flex justify-center flex-col px-6 xs:px-2 pb-10">
+      <!-- ФОРМА -->
+      <div class="min-w-40 max-w-80 mb-6">
+        <div class="mb-6">
+          <label for="{{ form.sum.id_for_label }}" class="text-gray-600">Введите сумму</label>
+          <div class="flex mt-3 mb-3 items-center border border-gray-300 rounded p-1 focus-within:ring-2 focus-within:offset-blue-500">
+            <input type="number" name="{{ form.sum.name }}" id="{{ form.sum.id_for_label }}" class="xs:text-sm pl-3 py-2 xs:py-1 w-full border-0 focus:ring-0 focus:outline-none focus:border-transparent" placeholder="100" />
+            <img src="{% static 'my_site/img/rub.svg' %}" alt="rub" class="w-6 h-6 text-gray-500" />
+          </div>
+          <span id="sum-error" class="text-red-700 mt-1"></span>
+        </div>
+        <!-- СПОСОБ ПОПОЛНЕНИЯ -->
+        <div>
+          <h3 class="text-gray-600">Способ пополнения</h3>
+          {% for provider in pay_p %}
+            <div class="payments flex items-center justify-between my-3 border border-gray-300 rounded p-2 hover:ring-2 hover:offset-blue-500" onclick="select_payment(this)" data-method="{{ provider.provider }}">
+              <div class="flex items-center">
+                <img src="{% static 'my_site/img/' %}{{ provider.img }}" alt="{{ provider.name }}" class="h-8 xs:h-5 w-8 xs:w-5" />
+                <span class="text-gray-700 text-xl xs:text-sm ml-3">{{ provider.name }}</span>
+              </div>
+              <img id="payment-img" src="{% static 'my_site/img/check_p.svg' %}" alt="check_p" class="hidden h-8 xs:h-5 w-8 xs:w-5" />
+            </div>
+          {% endfor %}
+          <span id="method-error" class="text-red-700 mt-1"></span>
+          <div>
+            <button onclick="pay()" class="mt-6 text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500">Оплатить</button>
+          </div>
+        </div>
+      </div>
+      <!-- ИСТОРИЯ ПЛАТЕЖЕЙ -->
+      <div class="min-w-80">
+        <div>
+          <h3 class="text-gray-600 mb-4">История платежей</h3>
+          <div class="bg-gray-50 rounded-md overflow-x-auto">
+            <p class="text-center">Нет платежей</p>
+            <div class="overflow-x-auto text-center">
+              <table class="overflow-auto min-w-full divide-y divide-gray-200">
+                <tbody class="divide-y divide-gray-200">
+                  <tr>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="text-sm xs:text-xs font-medium text-gray-900">12.10.2024</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="text-sm xs:text-xs font-medium text-gray-900">500р</div>
+                    </td>
+                    <td class="px-4 py-4 whitespace-nowrap">
+                      <div class="text-sm xs:text-xs font-medium text-gray-900">Поступил</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <script src="{% static 'lk/js/payment.js' %}"></script>
+{% endblock %}

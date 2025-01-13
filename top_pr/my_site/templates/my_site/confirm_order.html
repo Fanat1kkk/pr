@@ -1,45 +1,67 @@
+{% extends 'my_site/base.html' %} 
+{% load static %}
 {% load custom_filters %}
 
-  <form action="{% url 'pay' %}" method="POST">
-    {% csrf_token %}
-    {{ order_form.order_id }}
-    <div class="row g-3">
-      <div class="row align-items-center mb-3">
-        <div class="mt-3 text-danger">Внимание! Не закрывайте данное окно, после успешной оплаты здесь будет ссылка для отслеживания задания.</div>
-        <div class="col-6">
-          Товар:
+{% block confirm_order %}
+
+<main class="bg-gray-100 xs:pt-8">
+    <div class="container pt-24 pb-10">
+        <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
+        <div class="flex flex-col">
+            <div class="flex sm:flex-col w-full max-w-4xl gap-10 sm:gap-0">
+                <!-- Форма оформления заказа -->
+                <div class="flex-1 text-lg text-gray-900 font-semibold">
+                    <p class="mt-6">
+                        <span>Соц. Сеть:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.category.cat_name }}</span>
+                    </p>
+                    <p class="mt-6">
+                        <span>Категория:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.sub_cat.name }}</span>
+                    </p>
+                    <p class="mt-6">
+                        <span>Тариф:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.name }} ({{ order.service.price_per_one }} руб./шт)</span>
+                    </p>
+                    <p class="mt-6">
+                        <span>Количество:</span><span class="text-gray-600 font-medium ml-6">{{ order.count }} шт.</span>
+                    </p>
+                    <p class="mt-6">
+                        <span>Цена:</span><span class="text-gray-600 font-medium ml-6">{{ order.get_price|format_decimal }} руб</span>
+                    </p>
+                    <p class="mt-6">
+                        <span>Ссылка:</span><a href="{{ order.task_url }}" class="text-blue-600 font-medium ml-6">{{ order.task_url }}</a>
+                    </p>
+                </div>
+                <!-- Описание услуги -->
+                <div class="flex-none ml-6 sm:min-w-[70%] p-4 border border-gray-200 rounded-lg mt-6 h-fit">
+                    <h2 class="text-[#282c4b] text-2xl font-medium">Об услуге</h2>
+                    <div class="border-t border-gray-200 my-5"></div>
+                    <h3>{{ order.service.text_info|safe }}</h3>
+                </div>
+            </div>
         </div>
-        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.service }}</p>
-      </div>
-      <div class="row align-items-center mb-3">
-        <div class="col-6">
-          Кол-во: 
+        <div class="max-w-md mt-5">
+            <h3 class="text-gray-600">Способ пополнения</h3>
+            {% for provider in pay_p %}
+            <div class="payments flex items-center justify-between mt-3 mb-3 border border-gray-300 rounded p-2 hover:ring-2 hover:offset-blue-500" onclick="select_payment(this)" data-method="{{ provider.provider }}">
+                <div class="flex items-center">
+                    <img src="{% static 'my_site/img/' %}{{ provider.img }}" alt="credit-card" class="h-8 w-8">
+                    <span class="text-gray-700 text-xl ml-3">{{ provider.name }}</span>
+                </div>
+                <img id="payment-img" src="{% static 'my_site/img/check_p.svg' %}" alt="check_p" class="hidden h-8 w-8">
+            </div>
+            {% endfor %}
+            <button
+            class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500"
+            disabled>Оплатить</button>
         </div>
-        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.count }}</p>
-      </div>
-      <div class="row align-items-center mb-3">
-        <div class="col-6">
-          Цена: 
-        </div>
-        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.price|format_decimal }} р.</p>
-      </div>
-      <div class="row align-items-center mb-3">
-        <div class="col-6">
-          Номер заказа : 
-        </div>
-        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.order_id }}</p>
-      </div>
-      <div class="row align-items-center mb-3">
-        <div class="col-6">
-          Способ оплаты : 
-        </div>
-        <p class="price_text col-3 text-start mt-3 pt-4 text-muted">{{ order.transaction.get_pay_provider_display }}</p>
-      </div>
+
     </div>
-    <div class="modal-footer d-flex justify-content-between">
-      <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button> -->
-      <div class="text-danger col-3 col-lg-5" id="checked-error"></div>
-      <button type="button" class="btn btn-primary col-5 col-lg-5" data-order-id="{{ order.order_id }}" data-type="pay" id="pay">Оплатить</button>
-    </div>
-  </form>
+</main>
+
+{% endblock confirm_order %}
+
+{% block script_js %}
+
+<script src="{% static 'my_site/js/payment.js' %}"></script>
+
+{% endblock script_js %}
 

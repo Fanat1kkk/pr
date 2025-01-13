@@ -1,0 +1,83 @@
+{% extends 'my_site/base.html' %}
+{% load static %}
+
+{% block create_order %}
+  <!-- Первый блок -->
+  <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
+  <main class="bg-gray-100 xs:pt-8">
+    <div class="flex items-center justify-center">
+      <div class="flex sm:flex-col w-full max-w-4xl gap-10 sm:gap-0">
+        <!-- Форма оформления заказа -->
+        <div class="flex-1 p-4">
+          {% csrf_token %}
+          <!-- ССЫЛКА -->
+          <div class="mb-6">
+            <label class="block text-sm font-semibold text-black mb-[14px]">Ссылка</label>
+            <input type="url" id="urlInput" name="url" placeholder="{{ service.link_p }}" class="text-xl xs:text-base px-4 py-3 bg-transparent placeholder-gray-600 hover:placeholder-gray-900 text-gray-600 border w-full border-gray-300 rounded-md focus:ring-1 ring-offset-blue-500 focus:outline-none" />
+            <span id="url-error" class="text-red-700 mt-1"></span>
+          </div>
+          <!-- EMAIL -->
+          {% if user.is_authenticated %}
+            <div class="mb-6 hidden">
+              <label class="block text-sm font-semibold text-black mb-[14px]">Email</label>
+              <input type="email" id="inputEmail" name="email" value="{{ user.email }}" />
+            </div>
+          {% else %}
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-black mb-[14px]">Email</label>
+              <input type="email" id="inputEmail" name="email" placeholder="Адрес электронной почты" class="text-xl xs:text-base px-4 py-3 bg-transparent placeholder-gray-600 hover:placeholder-gray-900 text-gray-600 border w-full border-gray-300 rounded-md focus:ring-1 ring-offset-blue-500 focus:outline-none" />
+              <span id="email-error" class="text-red-700 mt-1"></span>
+            </div>
+          {% endif %}
+          <!-- Кол-во -->
+          <div class="flex justify-between mb-6">
+            <div class="xs:w-1/2 xs:mb-7">
+              <label for="numberInput" class="block text-sm font-semibold text-black mb-[14px]">Количество</label>
+              <div class="flex items-center">
+                <button id="decrease" class="text-xl text-gray-700 px-4 xs:px-3 py-3 xs:py-2 border border-gray-300 rounded-l-md">-</button>
+                <input id="numberInput" type="number" value="{{ service.min_count }}" min="{{ service.min_count }}" class="text-xl w-24 text-center bg-transparent text-gray-600 px-4 xs:px-3 py-3 xs:py-2 border-t border-b border-gray-300 focus:ring-0 focus:outline-none" />
+                <button id="increase" class="text-xl text-gray-700 px-4 xs:px-3 py-3 xs:py-2 border border-gray-300 rounded-r-md">+</button>
+              </div>
+              <div class="flex items-center gap-3 mt-2">
+                <img src="{% static 'my_site/img/limit.svg' %}" alt="limit" class="w-3 h-3" />
+                <small class="text-gray-600 xs:text-xs">Лимиты: от {{ service.min_count }} до {{ service.max_count }}</small>
+              </div>
+              <span id="count-error" class="text-red-700 mt-1"></span>
+            </div>
+            <div class="xs:w-auto">
+              <label for="priceDisplay" class="block text-sm font-semibold text-black mb-[14px]">Цена</label>
+              <div id="priceDisplay" class="xs:w-auto text-center xs:text-right text-xl text-gray-600 px-4 xs:px-3 py-3 xs:py-2 rounded-md border border-gray-300">0 ₽</div>
+            </div>
+          </div>
+          <!-- Промокод -->
+          <div class="mb-6">
+            <div class="flex items-center justify-between mb-5">
+              <label for="promocode" class="block text-sm font-semibold text-black">Промокод</label>
+              <a href="#" class="text-base xs:text-xs py-2 px-3 border border-blue-700 hover:border-fuchsia-900 text-blue-700 hover:text-fuchsia-900 rounded-md">Получить промокод!</a>
+            </div>
+            <div class="flex items-center border border-gray-300 rounded p-1 focus-within:ring-1 focus-within:offset-blue-500">
+              <input type="text" name="promocode" id="promocode" class="xs:text-sm pl-3 py-2 xs:py-1 w-full bg-transparent border-0 focus:ring-0 focus:outline-none" placeholder="Введите промокод" />
+              <button type="button" id="promocodeButton" class="xs:text-xs bg-blue-500 text-white px-4 xs:px-3 py-2 xs:py-2 rounded hover:bg-blue-600">Активировать</button>
+            </div>
+            <span id="promo-error" class="text-red-700 mt-1"></span>
+          </div>
+          <!-- Кнопка -->
+          <button id="submitButton" onclick="createOrder()" class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500">Создать заказ</button>
+        </div>
+        <!-- Описание услуги -->
+        <div class="flex-none w-1/3 sm:min-w-[70%] p-4 border border-gray-200 rounded-lg mt-12 h-fit">
+          <h2 class="text-[#282c4b] text-2xl font-medium">Об услуге</h2>
+          <div class="border-t border-gray-200 my-5"></div>
+          <div>{{ service.text_info|safe }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Скрытые элементы для передачи значений -->
+    <div id="serviceData" style="display: none;" data-serviceid="{{ service.service_id }}" data-min-count="{{ service.min_count }}" data-max-count="{{ service.max_count }}" data-price="{{ service.price_per_one }}" data-promo="0"></div>
+  </main>
+{% endblock %}
+
+{% block script_js %}
+  <script src="{% static 'my_site/js/create_order.js' %}"></script>
+{% endblock %}

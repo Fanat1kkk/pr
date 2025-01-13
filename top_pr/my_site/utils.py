@@ -1,4 +1,4 @@
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_UP
 import secrets
 import string
 from random import randint
@@ -11,7 +11,7 @@ def del_zero(value: Decimal) -> str:
     if isinstance(value, Decimal):
         # Определяем максимальное количество знаков после запятой (например, 10)
         # .quantize() сохраняет точность и не переводит в научную нотацию
-        value = value.quantize(Decimal('1.0000'))  # 4 знака после запятой, можно изменить
+        value = value.quantize(Decimal('1.00'), rounding=ROUND_UP)  # 4 знака после запятой, можно изменить
 
         # Преобразуем в строку
         result = format(value, 'f')
@@ -20,4 +20,7 @@ def del_zero(value: Decimal) -> str:
         return result.rstrip('0').rstrip('.') if '.' in result else result
     return value
     
+    
+def is_ajax(request):
+    return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 

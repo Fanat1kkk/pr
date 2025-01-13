@@ -5,7 +5,6 @@ from hashlib import md5, sha1
 from django.conf import settings
 
 from my_site.models import Client, Order
-from my_site.utils import del_zero
 from .models import Transaction, ProviderPay
 
 from requests import Session
@@ -36,7 +35,6 @@ class PayBaseProvider:
         self.redirect = self._pay_url(price=price, unic_id=unic_id)
         print('redirect: ', self.redirect)
         Transaction.objects.create(client=client, unic_id=unic_id, sum=price, pay_type=Transaction.LK, pay_provider=self.name, sign=sign, pay_url=self.redirect)
-
 
     def create_pay(self, order: Order):
         unic_id = self._gen_tr_id()
@@ -196,7 +194,7 @@ class PayProfileProvider(PayBaseProvider):
         return 
 
     def _pay_url(self, order:Order, sign):
-        return f'{self.url}orders/search?email={order.client.email}'
+        return f'{self.url}profile/'
 
 
 

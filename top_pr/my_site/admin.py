@@ -35,7 +35,7 @@ class ClientAdmin(admin.ModelAdmin):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    
+    prepopulated_fields = {"slug": ("cat_name",)}
     list_display = ['cat_name']
 
 
@@ -47,7 +47,7 @@ class ProviderAdmin(admin.ModelAdmin):
 
 @admin.register(Service)
 class ServiceAdmin(admin.ModelAdmin):
-    
+    prepopulated_fields = {"slug": ("name",)}
     list_display = ['name', 'full_name', 'price_d', 'price_per_one_d', 'order_complite', 'service_id', 'provider_service_id', 'provider', 'is_published']
     
     def price_d(self, obj: Service):
@@ -66,7 +66,7 @@ class ServiceAdmin(admin.ModelAdmin):
 
 @admin.register(Subcategory)
 class SubcategoryAdmin(admin.ModelAdmin):
-
+    prepopulated_fields = {'slug': ('name',)}
     list_display = ['name', 'img']
 
 

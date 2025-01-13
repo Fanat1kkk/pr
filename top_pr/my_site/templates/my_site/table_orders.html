@@ -5,14 +5,6 @@
 	<h2 class="text-center mt-2">Ваши заказы</h2>
 	<h2 class="text-center mt-2">Если заказ отменён или выполнен частично, то средства возвращаются на ваш баланс!</h2>
     <div class="d-flex flex-column justify-content-center">
-		<div class="d-flex mt-4 col-4 col-md-4">
-			<select class="form-select form-select-sm" id="sort_orders" data-email="{{ email }}">
-				<option {% if status == 'ALL' %}selected{% endif %} value="ALL">Все</option>
-				<option {% if status == 'INWOR' %}selected{% endif %} value="INWOR">В работе</option>
-				<option {% if status == 'COMPL' %}selected{% endif %} value="COMPL">Выполненые</option>
-				<option {% if status == 'CANC' %}selected{% endif %} value="CANC">Отменённые</option>
-			  </select>
-		</div>
     </div>
     <div class="row">
         <div class="col-md-12">

@@ -1,199 +1,294 @@
-{% extends 'my_site/base.html' %}
-{% load static %}
-
-{% block header_info %}
-<div class="main_screen text-center mb-5">
-  <h4>Продвижение в социальных сетях</h4>
-  <h3 class="screen_text mt-3">Качественно, быстро с гарантией.</h3>
-  <div class="social mt-4">
-    <div class="social_head">
-      <p>Ежедневные купоны с балансом в нашем сообществе ВКонтакте</p>
+{% extends 'my_site/base.html' %} {% load static %} {% block main %}
+  <!-- ШАПКА САЙТА -->
+  <section class="container mb-20">
+    <h1 class="text-center text-6xl md:text-5xl sm:text-4xl xs:text-2xl leading-relaxed md:leading-relaxed sm:leading-normal xs:leading-[2em] text-[#282c4b]">
+      <span class="">Накрутка подписчиков, лайков, друзей</span> <br />
+      <span class="text-[#3286E9] font-bold tracking-wider">Вконтакте</span>,
+      <span class="text-[#DE3BCE] font-bold tracking-wider">Инстаграм</span>,<br />
+      <span class="text-[#000] font-bold tracking-wider">ТикТок</span>
+      <span class="text-[#676767] font-bold tracking-wider">и другие...</span>
+    </h1>
+    <div class="flex justify-center mt-14 mb-5">
+      <a href="#create-order" class="flex items-center gap-5 bg-blue-500 hover:bg-blue-600 text-white font-medium text-4xl xs:text-2xl py-3 px-7 rounded-3xl transition duration-300">
+        <span>Быстрый заказ</span>
+        <img src="{% static 'my_site/img/basket.svg' %}" alt="Корзина" class="w-7 h-7" />
+      </a>
     </div>
-    <div class="d-flex justify-content-center">
-      <div class="vk me-3">
-        <a class="d-flex align-items-center" href="https://vk.com/toppr_smm" target="_blank">
-          <img src="{% static 'my_site/img/vk.svg' %}" alt="vk">
-          <p class="ms-1">@toppr_smm</p>
-        </a>
+  </section>
+
+  <!-- БЫСТРЫЙ ЗАКАЗ -->
+  <section class="bg-white" id="create-order">
+    <div class="container">
+      <!-- ШАПКА БЛОКА БЫСТРЫЙ ЗАКАЗ -->
+      <div class="text-center pt-20 xs:pt-10 mb-20 xs:mb-10 text-gray-700 tracking-widest">
+        <h2 class="text-4xl font-bold mb-6">Быстрый заказ</h2>
+        <h3 class="text-2xl font-medium">За считанные минуты станьте известным. Максимально удобно и без регистрации.</h3>
       </div>
 
-      <!-- <div class="tg">
-        <a class="d-flex align-items-center" href="https://t.me/top_piar_support" target="_blank">
-          <img src="{% static 'my_site/img/telegram.svg' %}" alt="telegram">
-          <p class="ms-1">@top_piar_support</p>
-        </a>
-      </div> -->
-    </div>
-  </div>
-</div>
-{% endblock header_info %}
-
-{% block price %}
-<div class="main_pr">
-  <div class="container">
-    <div class="pr_items">
-      <div class="row justify-content-center">
-        <div class="col-9 col-sm-7 col-md-7 col-lg-4">
-          {% for category in categories %}
-            <div class="pr_item">
-              <div class="pr_active" data-bs-toggle="collapse" href="#collapse{{ forloop.counter }}" role="button" aria-expanded="false" aria-controls="collapse3">
-                <div class="icon">
-                  <img src="{% static 'my_site/img/' %}{{ category.get_img_display }}" alt="telegram">
-                </div>
-                <p>{{ category.cat_name }}</p>
-                <div class="check">
-                  <img src="{% static 'my_site/img/check.svg' %}" alt="check">
-                </div>
-              </div>
-              <div class="collapse" id="collapse{{ forloop.counter }}">
-                <div class="pr_block">
-                  {% for sub_cat in category.sub_cat.all %}
-                  <a href="#" data-bs-toggle="modal" data-bs-target="#orderModal" data-bs-whatever="{{ sub_cat.name }} {{ category.cat_name }}" data-cat-id="{{ category.pk }}" data-sub-id="{{ sub_cat.pk }}">
-                    <div class="pr__block_item">
-                      <div class="icon">
-                        <img src="{% static 'my_site/img/' %}{{ sub_cat.get_img_display }}" alt="user">
-                      </div>
-                      <p>{{ sub_cat.name }}</p>
+      <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
+      <div class="flex items-center justify-center">
+        <div class="flex sm:flex-col w-full max-w-4xl gap-10 sm:gap-0">
+          <!-- Форма оформления заказа -->
+          <div class="flex-1 p-4">
+            {% csrf_token %}
+            <!-- Социальная сеть -->
+            <div class="mb-6">
+              <label for="socialNetwork" class="block text-sm font-semibold text-black mb-[14px]">Социальная сеть</label>
+              <div class="relative mt-1">
+                <div class="relative border border-gray-300 rounded-md cursor-pointer" id="socialNetwork">
+                  <div class="flex items-center justify-between px-5 py-3">
+                    <div class="flex items-center gap-5">
+                      <img id="socialNetworkIcon" src="{% static 'my_site/img/' %}{{ categories.0.get_img_display }}" alt="{{ categories.0.cat_name }}" class="w-7 xs:w-5 h-7 xs:h-5" />
+                      <span id="socialNetworkText" data-value="{{ categories.0.slug }}" class="text-gray-600 hover:text-gray-900 text-lg xs:text-base">{{ categories.0.cat_name }}</span>
                     </div>
-                  </a>
-                  {% endfor %}
+                    <div>
+                      <img id="socialNetworkIconCheck" class="h-3 xs:h-2 w-5 xs:w-4" src="{% static 'my_site/img/check.svg' %}" alt="check" />
+                    </div>
+                  </div>
+                  <div class="absolute left-0 right-0 mt-1 hidden bg-white border border-gray-300 rounded-md shadow-lg z-10" id="socialNetworkOptions">
+                    {% for cat in categories %}
+                      <div class="flex items-center p-2 cursor-pointer hover:bg-gray-100" option data-value="{{ cat.slug }}" data-icon="{% static 'my_site/img/' %}{{ cat.get_img_display }}">
+                        <img src="{% static 'my_site/img/' %}{{ cat.get_img_display }}" class="w-5 h-5 mr-2" alt="{{ cat.cat_name }}" />
+                        <span>{{ cat.cat_name }}</span>
+                      </div>
+                    {% endfor %}
+                  </div>
                 </div>
               </div>
             </div>
-          {% endfor %}
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-{% if not user.is_authenticated %}
-<div class="info_center mt-3 text-center">
-  <p>За не выполненые заказы средства зачисляются на ваш баланс.
-   <br> Указывайте верный емаил адрес на него прейдёт пароль для авторизации</p>
-</div>
-{% endif %}
-<div class="mt-3 mb-2 text-center screen_text">
-  <p>Для связи:</p>
-</div>
-<div class="d-flex justify-content-center">
-  <div class="vk me-3">
-    <a class="d-flex align-items-center" href="https://vk.com/topprru" target="_blank">
-      <img src="{% static 'my_site/img/vk.svg' %}" alt="vk">
-      <p class="ms-1">@topprru</p>
-    </a>
-  </div>
 
-  <div class="tg">
-    <a class="d-flex align-items-center" href="https://t.me/topprru" target="_blank">
-      <img src="{% static 'my_site/img/telegram.svg' %}" alt="telegram">
-      <p class="ms-1">@topprru</p>
-    </a>
-  </div>
-</div>
-{% endblock price %}
+            <!-- Услуга -->
+            <div class="mb-6">
+              <label for="service" class="block text-sm font-semibold text-black mb-[14px]">Услуга</label>
+              <div class="relative mt-1">
+                <div class="relative border border-gray-300 rounded-md cursor-pointer" id="service">
+                  <div class="flex items-center justify-between px-5 py-3">
+                    <div class="flex items-center gap-5">
+                      <img id="serviceIcon" src="{% static 'my_site/img/' %}{{ sub_cats.0.get_img_display }}" alt="Icon" class="w-5 h-5" />
+                      <span id="serviceText" data-value="{{ sub_cats.0.slug }}" class="text-gray-600 hover:text-gray-900 text-lg xs:text-base">{{ sub_cats.0.name }}</span>
+                    </div>
+                    <div>
+                      <img id="serviceIconCheck" class="h-3 xs:h-2 w-5 xs:w-4" src="{% static 'my_site/img/check.svg' %}" alt="check" />
+                    </div>
+                  </div>
+                  <div class="absolute left-0 right-0 mt-1 hidden bg-white border border-gray-300 rounded-md shadow-lg z-10" id="serviceOptions">
+                    {% for sub_cat in sub_cats %}
+                      <div class="flex items-center p-2 cursor-pointer hover:bg-gray-100" option data-value="{{ sub_cat.slug }}" data-icon="{% static 'my_site/img/' %}{{ sub_cat.get_img_display }}">
+                        <img src="{% static 'my_site/img/' %}{{ sub_cat.get_img_display }}" class="w-5 h-5 mr-2" alt="sub_cat.name" />
+                        <span>{{ sub_cat.name }}</span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-{% block modal %}
-<!-- Модальное окно офформления заказа -->
-<div class="container">
-  <div class="row col-12">
-    <div class="modal fade" id="orderModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <img src="" alt="" class="modalTitleImg">
-            <h5 class="modal-title m-auto" id="staticBackdropLabel">
-            </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            <!-- Тариф -->
+            <div class="mb-6">
+              <label for="tariff" class="block text-sm font-semibold text-black mb-[14px]">Тариф</label>
+              <div class="relative mt-1">
+                <div class="relative border border-gray-300 rounded-md cursor-pointer" id="tariff">
+                  <div class="flex items-center justify-between px-5 py-3">
+                    <div class="flex items-center gap-5">
+                      <span id="infoText" data-value="{{ tariffs.0.service_id }}" data-price="{{ tariffs.0.price_per_one }}" data-minCount="{{ tariffs.0.min_count }}" data-maxCount="{{ tariffs.0.max_count }}" class="text-gray-600 hover:text-gray-900 text-lg xs:text-xs">
+                        {{ tariffs.0.name }} ({{ tariffs.0.price_per_one }}
+                        руб./шт)
+                      </span>
+                    </div>
+                    <div>
+                      <img id="tariffIconCheck" class="h-3 xs:h-2 w-5 xs:w-4" src="{% static 'my_site/img/check.svg' %}" alt="check" />
+                    </div>
+                  </div>
+                  <div class="absolute left-0 right-0 mt-1 hidden bg-white border border-gray-300 rounded-md shadow-lg z-10" id="tariffOptions">
+                    {% for tariff in tariffs %}
+                      <div class="flex items-center p-2 cursor-pointer hover:bg-gray-100" option data-value="{{ tariff.service_id }}" data-price="{{ tariff.price_per_one }}" data-minCount="{{ tariff.min_count }}" data-maxCount="{{ tariff.max_count }}" data-desc="{{ tariff.text_info }}">
+                        <span>
+                          {{ tariff.name }} ({{ tariff.price_per_one }}
+                          руб./шт)
+                        </span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ССЫЛКА -->
+            <div class="mb-6">
+              <label class="block text-sm font-semibold text-black mb-[14px]">Ссылка</label>
+              <input type="url" name="url" id="link_p" placeholder="{{ tariffs.0.link_p }}" class="text-xl xs:text-base placeholder-gray-600 hover:placeholder-gray-900 text-gray-600 pl-5 py-3 border rounded-md w-full border-gray-300 focus:ring-0 focus:outline-none" />
+              <span id="url-error" class="text-red-700 mt-1"></span>
+            </div>
+
+            <!-- EMAIL -->
+            {% if user.is_authenticated %}
+              <div class="mb-6 hidden">
+                <label class="block text-sm font-semibold text-black mb-[14px]">Email</label>
+                <input id="inputEmail" type="Email" name="email" value="{{ user.email }}" placeholder="Адрес электроной почты" class="text-xl xs:text-base placeholder-gray-600 hover:placeholder-gray-900 text-gray-600 pl-5 py-3 border rounded-md w-full border-gray-300 focus:ring-0 focus:outline-none" />
+              </div>
+            {% else %}
+              <div class="mb-6">
+                <label class="block text-sm font-semibold text-black mb-[14px]">Email</label>
+                <input id="inputEmail" type="Email" name="email" placeholder="Адрес электроной почты" class="text-xl xs:text-base placeholder-gray-600 hover:placeholder-gray-900 text-gray-600 pl-5 py-3 border rounded-md w-full border-gray-300 focus:ring-0 focus:outline-none" />
+                <span id="email-error" class="text-red-700 mt-1"></span>
+              </div>
+            {% endif %}
+
+            <!-- Кол-во -->
+            <div class="flex justify-between">
+              <div class="xs:w-1/2 xs:mb-7">
+                <label for="numberInput" class="block text-sm font-semibold text-black mb-[14px]">Количество</label>
+                <div class="flex items-center">
+                  <button id="decrease" class="text-xl text-gray-700 px-4 xs:px-3 py-3 xs:py-2 border border-gray-300 rounded-l-md">-</button>
+                  <input id="numberInput" type="text" value="{{ tariffs.0.min_count }}" class="text-xl w-24 text-center text-gray-600 px-3 py-3 border-t border-b border-gray-300 focus:ring-0 focus:outline-none" pattern="\d*" inputmode="numeric" />
+                  <button id="increase" class="text-xl text-gray-700 px-4 xs:px-3 py-3 xs:py-2 border border-gray-300 rounded-r-md">+</button>
+                </div>
+                <div class="flex items-center gap-3 mt-2">
+                  <img src="{% static 'my_site/img/limit.svg' %}" alt="limit" class="w-3 h-3" />
+                  <small id="infoCount" class="text-gray-600 xs:text-xs">Лимиты: от {{ tariffs.0.min_count }} до {{ tariffs.0.max_count }}</small>
+                </div>
+                <span id="count-error" class="text-red-700 mt-1"></span>
+              </div>
+              <div class="xs:w-auto">
+                <label for="finalPrice" class="block text-sm font-semibold text-black mb-[14px]">Цена</label>
+                <div id="finalPrice" class="xs:w-auto text-center xs:text-right text-xl text-gray-600 px-4 xs:px-3 py-3 xs:py-2 rounded-md border border-gray-300">0 ₽</div>
+              </div>
+            </div>
+
+            <!-- Промокод -->
+            <div class="mb-6">
+              <div class="flex items-center justify-between mb-5">
+                <label for="promocode" class="block text-sm font-semibold text-black">Промокод</label>
+                <a href="#" class="text-base xs:text-xs py-2 px-3 border border-blue-700 hover:border-fuchsia-900 text-blue-700 hover:text-fuchsia-900 rounded-md">Получить промокод!</a>
+              </div>
+              <div class="flex items-center border border-gray-300 rounded p-1">
+                <input type="text" name="promocode" id="promocode" class="xs:text-sm pl-3 py-2 xs:py-1 w-full border-0 focus:ring-0 focus:outline-none" placeholder="Введите промокод" />
+                <button type="button" id="btn-promo" class="xs:text-xs bg-blue-500 text-white px-4 xs:px-3 py-2 xs:py-2 rounded hover:bg-blue-600">Активировать</button>
+              </div>
+              <span id="promo-error" class="text-red-700 mt-1"></span>
+            </div>
+            <!-- Кнопка -->
+
+            <button id="submitButton" class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500" onclick="createOrder()">Создать заказ</button>
           </div>
-          <div class="modal-body" id="order-form">
-            <div id="forma-order-create">
-              <form action="{% url 'new_order' %}" method="POST" id="order" class="needs-validation" novalidate>
-                {% csrf_token %}
-                <div class="row g-3">
-                  <div class="ml-3 mr-3">
-                    <label for="{{ form.service.id_for_label }}" class="col-form-label">Выберите тариф</label>
-                    {{ form.service }}
-                    <div class="invalid-feedback" id="service_error"></div>
-                  </div>
-                  <div class="ml-3 mr-3">
-                    <div class="d-flex flex-column">
-                      <div class="d-flex service_info mb-2 flex-column flex-sm-row">
-                        <div id="id-speed" class="me-2">
-                          Скорость: 
-                        </div>
-                        <div id="id-quality">
-                          Качество: 
-                        </div>
-                      </div>
-                      <div class="text-muted" id="service-info-text">
-                        
-                      </div>
-                      <br>
-                      <p style="color:#c0392b"><strong>Берите на пробу минимальное кол-во!!!</strong></p>
-                    </div>
-                  </div>
-                  <div class="mb-3">
-                    <div class="row align-items-center mb-3">
-                      <div class="col-6">
-                        <label for="{{ form.count.id_for_label }}" class="col-form-label">Укажите количество</label>
-                        {{ form.count }}
-                        <div class="invalid-feedback" id="count_error"></div>
-                      </div>
-                      <p class="price_text col-3 text-start mt-3 pt-4 text-muted" id="price">0 руб</p>
-                    </div>
-                    <div>
-                      <label for="{{ form.task_url.id_for_label }}" class="col-form-label">Укажите ссылку</label>
-                      {{ form.task_url }}
-                      <div class="invalid-feedback" id="task_url_error"></div>
-                    </div>
-                    {% if user.is_authenticated %}
-                    <div>
-                      <input type="hidden" name="email" value="{{ user.email }}">
-                    </div>
-                    {% else %}
-                    <div>
-                      <label for="{{ form.email.id_for_label }}" class="col-form-label">
-                        На почту придёт пароль и ссылка для отслеживания заказов
-                      </label>
-                      {{ form.email }}
-                      <div class="invalid-feedback" id="email_error"></div>
-                    </div>
-                    {% endif %}
-                    <div>
-                      <div class="ml-3 mr-3">
-                        <label for="{{ form.pay_provider.id_for_label }}" class="col-form-label">Выбирите способ оплаты</label>
-                        {{ form.pay_provider }}
-                      <div class="invalid-feedback" id="pay_provider_error"></div>
-                    </div>
-                    <div class="row">
-                      <div class="col-4">
-                        <label for="{{ form.promocode.id_for_label }}" class="col-form-label">Промо код</label>
-                        {{ form.promocode }}
-                        <div class="invalid-feedback" id="promocode_error"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                  <button type="button" class="btn btn-primary" id="btn-create-order">
-                    <span id="btn-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden></span>
-                    Продолжить
-                  </button>
-                </div>
-              </form>
-            </div>
-            <div id="order-confirm-form">
-
-            </div>
+          <!-- Описание услуги -->
+          <div class="flex-none w-1/3 sm:min-w-[70%] p-4 border border-gray-200 rounded-lg mt-12 h-fit">
+            <h2 class="text-[#282c4b] text-2xl font-medium">Об услуге</h2>
+            <div class="border-t border-gray-200 my-5"></div>
+            <h3 id="tariffDiscription">{{ tariffs.0.text_info|safe }}</h3>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-<script src="{% static 'my_site/js/modal_form.js' %}"></script>
-{% endblock modal %}
+  </section>
 
+  <!-- Для экранов больше 479.99px -->
+  <section class="sm:hidden bg-white pb-10 pt-20">
+    <div class="container flex flex-col items-start gap-36">
+      <div class="flex gap-10">
+        <div class="flex">
+          <img src="{% static 'my_site/img/chsi.svg' %}" alt="chsi" class="h-16 md:h-14 w-16 md:w-14 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-lg font-semibold mb-3 mt-3">Быстрый сарт</h3>
+            <p>Накрутка начинается сразу после оплаты заказа</p>
+          </div>
+        </div>
+        <div class="flex">
+          <img src="{% static 'my_site/img/speed.svg' %}" alt="speed" class="h-16 md:h-14 w-16 md:w-14 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-lg font-semibold mb-3 mt-3">Скорость</h3>
+            <p>Оперативное выполнение заказов любого уровня сложности и масштаба.</p>
+          </div>
+        </div>
+        <div class="flex">
+          <img src="{% static 'my_site/img/likee_p.svg' %}" alt="likee_p" class="h-16 md:h-14 w-16 md:w-14 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-lg font-semibold mb-3 mt-3">Доверие</h3>
+            <p>Сотни наших постоянных клиентов доверяют нам.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-10">
+        <div class="flex">
+          <img src="{% static 'my_site/img/guarantee.svg' %}" alt="guarantee" class="h-16 md:h-14 w-16 md:w-14 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-lg font-semibold mb-3 mt-3">Гарантия</h3>
+            <p>Мы гарантируем, что ваш заказ будет выполнен точно в срок.</p>
+          </div>
+        </div>
+        <div class="flex">
+          <img src="{% static 'my_site/img/support.svg' %}" alt="support" class="h-16 md:h-14 w-16 md:w-14 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-lg font-semibold mb-3 mt-3">Поддержка</h3>
+            <p>Мы всегда доступны и готовы помочь вам с любыми вопросами.</p>
+          </div>
+        </div>
+        <div class="flex">
+          <img src="{% static 'my_site/img/dollar.svg' %}" alt="dollar" class="h-16 md:h-14 w-16 md:w-14 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-lg font-semibold mb-3 mt-3">Возврат</h3>
+            <p>Если заказ не будет выполнен, мы вернём деньги.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
+  <!-- Для экранов меньше 479.99px -->
+  <section class="hidden sm:block bg-white pb-10 pt-20">
+    <div class="container flex flex-col items-center gap-24">
+      <div class="flex gap-10 justify-betweenW">
+        <div class="flex gap-1">
+          <img src="{% static 'my_site/img/chsi.svg' %}" alt="chsi" class="h-16 md:h-14 xs:h-8 w-16 md:w-14 xs:w-8 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-base font-semibold mb-3">Быстрый старт</h3>
+            <p class="sm:text-[13px]">Накрутка начинается сразу после оплаты заказа</p>
+          </div>
+        </div>
+        <div class="flex">
+          <img src="{% static 'my_site/img/speed.svg' %}" alt="speed" class="h-16 md:h-14 xs:h-8 w-16 md:w-14 xs:w-8 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-base font-semibold mb-3">Скорость</h3>
+            <p class="sm:text-[13px]">Оперативное выполнение заказов любого уровня сложности и масштаба.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-10">
+        <div class="flex">
+          <img src="{% static 'my_site/img/likee_p.svg' %}" alt="chsi" class="h-16 md:h-14 xs:h-8 w-16 md:w-14 xs:w-8 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-base font-semibold mb-3">Доверие</h3>
+            <p class="sm:text-[13px]">Сотни наших постоянных клиентов доверяют нам.</p>
+          </div>
+        </div>
+        <div class="flex">
+          <img src="{% static 'my_site/img/guarantee.svg' %}" alt="guarantee" class="h-16 md:h-14 xs:h-8 w-16 md:w-14 xs:w-8 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-base font-semibold mb-3">Гарантия</h3>
+            <p class="sm:text-[13px]">Мы гарантируем, что ваш заказ будет выполнен точно в срок.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-10">
+        <div class="flex">
+          <img src="{% static 'my_site/img/support.svg' %}" alt="support" class="h-16 md:h-14 xs:h-8 w-16 md:w-14 xs:w-8 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-base font-semibold mb-3">Поддержка</h3>
+            <p class="sm:text-[13px]">Мы всегда доступны и готовы помочь вам с любыми вопросами.</p>
+          </div>
+        </div>
+        <div class="flex">
+          <img src="{% static 'my_site/img/dollar.svg' %}" alt="dollar" class="h-16 md:h-14 xs:h-8 w-16 md:w-14 xs:w-8 mr-2" />
+          <div>
+            <h3 class="text-xl md:text-base font-semibold mb-2">Возврат</h3>
+            <p class="sm:text-[13px]">Если заказ не будет выполнен, мы вернём деньги.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
 
+{% block script_js %}
+  <script src="{% static 'my_site/js/order_form.js' %}"></script>
+{% endblock %}

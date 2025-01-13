@@ -3,7 +3,7 @@ from django import forms
 from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm, ResetPasswordKeyForm
 from payments.models import ProviderPay
 from payments.providers import pm
-from .models import Order, Client, CustomerReview
+from .models import Order, Client, CustomerReview, Service
 
 
 
@@ -104,41 +104,25 @@ class CommentForm(forms.ModelForm):
     
      
 class OrderForm(forms.ModelForm):
-    pay_provider = forms.ChoiceField(choices=ProviderPay.PROVIDERS, required=True,
-                                     widget=forms.Select({'class': 'form-select select-elements',
-                                                          'aria-describedby': 'pay_provider_error',}))
+    service = forms.IntegerField(required=True)
+    email = forms.EmailField(required=True)
+    # promocode = forms.CharField(required=False)
 
     class Meta:
         model = Order
-        fields = ('service', 'count', 'task_url', 'email', 'promocode', 'pay_provider')
-        widgets = {
-            'service': forms.Select(attrs={'class': 'form-select select-elements',
-                                           'aria-describedby': 'service_error',}),
-            
-            'count': forms.NumberInput(attrs={'class': 'form-control col-3',
-                                              'aria-describedby': 'count_error',
-                                              'placeholder': 1000}),
-
-            'task_url': forms.TextInput(attrs={'class': 'form-control',
-                                               'aria-describedby': 'task_url_error', 
-                                               'placeholder': 'Ссылка на пост, аккаунт'}),
-
-            'email': forms.EmailInput(attrs={'class': 'form-control',
-                                             'aria-describedby': 'email_error',
-                                             'placeholder': 'vasia_petrov@mail.ru'}),
-            
-            'promocode': forms.TextInput(attrs={'class': 'col-3 form-control',
-                                                'aria-describedby': 'promocode_error',
-                                                'placeholder': 'CODE'}),
-        }
+        fields = ('service', 'count', 'task_url', 'email', 'promocode')
         error_messages = {'promocode':{
             'invalid_choice': 'Код не действительный',
             'invalid_list': 'Код не действительный'
         }}
 
-    def clean_sevice(self):
-        service = self.cleaned_data.get('service', None)
-        if service:
+    def clean_service(self):
+        service_id = self.cleaned_data.get('service', None)
+        if service_id:
+            try:
+                service = Service.objects.get(service_id=service_id)
+            except Service.DoesNotExist:
+                raise forms.ValidationError('Услуга не найдена')
             return service
         else:
             raise forms.ValidationError('Не может быть пустым')
@@ -155,16 +139,10 @@ class OrderForm(forms.ModelForm):
 
         return count
 
-    def clean_pay_provider(self):
-        pay_provider = self.cleaned_data.get('pay_provider', None)
-        if not self.user.is_authenticated and pay_provider == ProviderPay.PRF:
-            raise forms.ValidationError('Вы не можете оплатить с баланса так как вы не авторизованы')
-        
-        return pay_provider
-
 
     def clean_promocode(self):
         promocode = self.cleaned_data.get('promocode', None)
+        print('promocode: ', promocode)
         
         if promocode and not promocode.is_active():
             raise forms.ValidationError('Код не действительный')
@@ -176,7 +154,6 @@ class OrderForm(forms.ModelForm):
         
         email = self.cleaned_data['email']
         promocode = self.cleaned_data['promocode']
-        pay_provider = self.cleaned_data['pay_provider']
 
         client = Client.objects.get_or_creat_user_from_email(email=email)
         order.client = client
@@ -187,26 +164,22 @@ class OrderForm(forms.ModelForm):
         order.calc_price(save=False)
         
         order.save()
-        pm.create_pay(order=order, pay_provider=pay_provider)
 
         return order
 
     def __init__(self, user: Client = None, *args, **kwargs) -> None:
         super(OrderForm, self).__init__(*args, **kwargs)
-
         self.user = user
-
-        if not user.is_authenticated:
-            self.fields['pay_provider'].choices = self.fields['pay_provider'].choices[:-1]
 
 
 class PayProfileForm(forms.Form):
     sum = forms.DecimalField(required=True ,widget=forms.widgets.NumberInput(attrs={'class': 'form-control',
-                                                                                    'placeholder': 'Сумма'}))
-    pay_provider = forms.ChoiceField(choices=ProviderPay.PROVIDERS[:-1], required=True,
+                                                                                    'placeholder': '100'}))
+    
+    pay_provider = forms.ChoiceField(choices=ProviderPay.PROVIDERS, required=True,
                                      widget=forms.Select({'class': 'form-select select-elements',}))
 
-
+    
     def clean_sum(self):
         sum = self.cleaned_data.get('sum')
         if sum <= 0 :

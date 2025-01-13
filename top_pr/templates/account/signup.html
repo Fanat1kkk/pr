@@ -1,0 +1,63 @@
+{% extends "my_site/base.html" %} 
+
+{% block signup %}
+<main class="bg-gray-100 xs:pt-8">
+    <div class="min-h-screen flex flex-col justify-center items-center">
+        <div class="bg-white shadow-lg rounded-lg p-8 w-full max-w-md">
+            <h2 class="text-2xl font-bold mb-6 text-gray-800">Регистрация</h2>
+
+            <form action="{% url "account_signup" %}" method="POST" class="space-y-6">
+                {% csrf_token %}
+                {% if form.errors %}
+                    <div class="text-red-500">
+                        <ul>
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+                <!-- Поле для электронной почты -->
+                <div>
+                    <label for="{{form.email.id_for_label}}" class="block text-sm font-medium text-gray-700">Электронная почта</label>
+                    <input type="{{form.email.field.widget.input_type}}" id="{{form.email.id_for_label}}" name="{{form.email.html_name}}" required
+                        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700">
+                </div>
+
+                <!-- Поле для пароля -->
+                <div>
+                    <label for="{{form.password1.id_for_label}}" class="block text-sm font-medium text-gray-700">Пароль</label>
+                    <input type="{{form.password1.field.widget.input_type}}" id="{{form.password1.id_for_label}}" name="{{form.password1.html_name}}" required
+                        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700">
+                </div>
+
+                <!-- Подтверждение пароля -->
+                <div>
+                    <label for="{{form.password2.id_for_label}}" class="block text-sm font-medium text-gray-700">Подтвердите
+                        пароль</label>
+                    <input type="{{form.password2.field.widget.input_type}}" id="{{form.password2.id_for_label}}" name="{{form.password2.html_name}}" required
+                        class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-gray-700">
+                </div>
+
+                <!-- Кнопка отправки -->
+                <div>
+                    <button type="submit"
+                        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+                        Зарегистрироваться
+                    </button>
+                </div>
+
+                <!-- Ссылка на вход -->
+                <p class="text-center text-sm text-gray-600">Уже есть аккаунт? <a href="{{ login_url }}"
+                        class="text-blue-500 hover:underline">Войти</a></p>
+
+            </form>
+        </div>
+    </div>
+</main>
+{% endblock signup %}

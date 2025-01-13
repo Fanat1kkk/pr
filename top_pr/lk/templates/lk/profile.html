@@ -1,0 +1,101 @@
+{% extends 'lk/base_profile.html' %}
+{% load math_tags %}
+{% load custom_filters %}
+{% load static %}
+{% comment %} {% load custom_filters %} {% endcomment %}
+
+{% block title %}
+  Профиль
+{% endblock %}
+{% block header_main %}Ваши заказы{% endblock header_main %}
+{% block content %}
+    {% if orders %}
+      <div class="overflow-x-auto">
+        <table class="overflow-auto min-w-full divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-gray-200">
+            {% for order in orders %}
+              <tr>
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <div class="flex items-center">
+                    <div class="flex-shrink-0 h-10 sm:h-8 xs:h-6 w-10 sm:w-8 xs:w-6">
+                      <img class="h-10 sm:h-8 xs:h-6 w-10 sm:w-8 xs:w-6 rounded-full" src="{% static 'my_site/img/' %}{{ order.service.category.get_img_display }}" alt="vk" />
+                    </div>
+                    <div class="ml-4">
+                      <div class="text-sm xs:text-xs font-medium text-gray-900">ID: {{ order.order_id }}</div>
+                      <div class="text-sm xs:text-xs text-gray-500">{{ order.service.full_name }}</div>
+                      <div class="text-sm xs:text-xs text-gray-500">
+                        <a href="{% url 'service-info' service_id=order.service.service_id %}">Подробнее об услуге</a>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <div class="text-sm xs:text-xs text-gray-500">
+                    До старта: <span class="text-gray-900">{{ order.start_count }}</span>
+                  </div>
+                  <div class="text-sm xs:text-xs text-gray-500">
+                    Выполнено: <span class="text-gray-900">{{ order.end_count }}</span>
+                  </div>
+                  <div class="text-sm xs:text-xs text-gray-500">
+                    Остаток: <span class="text-gray-900">{{ order.count|subtract:order.end_count }}</span>
+                  </div>
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap">
+                  <div class="text-sm xs:text-xs text-gray-500">
+                    Цена: <span class="text-gray-900">{{ order.get_price|format_decimal }} Р</span>
+                  </div>
+                  <div class="text-sm xs:text-xs text-gray-500">
+                    Оплачено: <span class="text-gray-900">{{ order.get_price_end_count_from_display }} Р</span>
+                  </div>
+                  <div class="text-sm xs:text-xs text-gray-500">
+                    {% if order.status == 'CANC' or order.status == 'PART' or order.status == 'BLOCK' %}
+                      Возврат: <span class="text-gray-900">{{ order.get_price|subtractDecimal:order.get_price_end_count }} Р</span>
+                    {% else %}
+                      Возврат: <span class="text-gray-900">0 Р</span>
+                    {% endif %}
+                  </div>
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap" id="status-{{ order.order_id }}">
+                  {% comment %} <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{{ order.status }}</span> {% endcomment %}
+                  {% if order.status == 'COMPL' and not order.review %}
+                    <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{{ order.get_status_display }}</span>
+                  {% elif order.status == 'INWOR' %}
+                    <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">{{ order.get_status_display }}</span>
+                  {% elif order.status == 'NOPAY' %}
+                    <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-red-800">{{ order.get_status_display }}</span>
+                  {% elif order.status == 'WCL' %}
+                    <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-200 text-black">{{ order.get_status_display }}</span>
+                  {% elif order.status == 'WST' %}
+                    <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-200 text-black">{{ order.get_status_display }}</span>
+                  {% elif order.status == 'CANC' %}
+                    <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-red-800">{{ order.get_status_display }}</span>
+                  {% elif order.status == 'PART' %}
+                    <span class="px-3 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">{{ order.get_status_display }}</span>
+                  {% endif %}
+                </td>
+                <td class="px-4 py-4 whitespace-nowrap text-sm font-medium" id="btn-{{ order.order_id }}">
+                  {% if order.status == 'COMPL' or order.status == 'PART' and not order.review %}
+                    <button class="ml-2 text-green-600 hover:text-green-900">ОЦЕНИТЬ</button>
+                  {% elif order.status == 'INWOR' %}
+                    {% if order.service.is_cancellation %}
+                      <button onclick="cancelOrder(this)" data-orderid="{{ order.order_id }}" class="ml-2 text-green-600 hover:text-green-900">STOP</button>
+                    {% else %}
+                      <p>Нельзя отменить</p>
+                    {% endif %}
+                  {% else %}
+                    <p>Нет действий</p>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="flex flex-col items-center pt-20">
+        <h2 class="text-gray-500 text-xl">У вас ещё нет заказов</h2>
+        <button onclick="window.location.href='{% url 'new-order-profile' %}'" id="submitButton" class="text-white cursor-pointer max-w-fit mt-7 bg-gradient-to-r from-fuchsia-500 to-blue-500 hover:from-blue-500 hover:to-fuchsia-500 py-2 px-4 rounded-lg tracking-wide transition-all duration-500">Создать заказ</button>
+      </div>
+    {% endif %}
+  <script src="{% static 'lk/js/cancel_order.js' %}"></script>
+{% endblock %}

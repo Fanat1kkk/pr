@@ -1,0 +1,52 @@
+{% extends 'my_site/base.html' %}
+{% load static %}
+
+{% block comment %}
+
+    <div class="text-center">
+        <h2>Оставьте пожалуйста отзыв о выполненом заказе</h2>
+        <h3>ID заказа: {{ order.order_id }}</h3>
+        <h3>Услуга: {{ order.service.name }}</h3>
+        <h3>Количество: {{ order.count }}</h3>
+        <br>
+    </div>
+    <div class="row justify-content-center">
+        <form class="col-9 col-sm-7 col-md-7 col-lg-4" method='POST' action="{% url "comment" order_id %}">
+            {% csrf_token %}
+            <div class="col-6 mb-3">
+                <label class="form-label fw-bold" for="{{ form.rating_acc.id_for_label }}">{{ form.rating_acc.label }}</label>
+                <select class="form-select" id="{{ form.rating_acc.id_for_label }}" name="{{ form.rating_acc.name }}">
+                    {% for value, text in form.rating_acc.field.choices %}
+                        {% if value == '5' %}
+                            <option value="{{ value }}" selected>{{ text }}</option>
+                        {% else %}
+                            <option value="{{ value }}">
+                                {{ text }}
+                            </option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-6 mb-3">
+                <label class="form-label fw-bold" for="{{ form.rating_speed.id_for_label }}">{{ form.rating_speed.label }}</label>
+                <select class="form-select" id="{{ form.rating_speed.id_for_label }}" name={{ form.rating_speed.name }}>
+                    {% for value, text in form.rating_speed.field.choices %}
+                        {% if value == '5' %}
+                            <option value="{{ value }}" selected>{{ text }}</option>
+                        {% else %}
+                            <option value="{{ value }}">{{ text }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-12 mb-3">
+                <label class="form-label fw-bold" for="{{ form.comment.id_for_label }}">{{ form.comment.label }}</label>
+                <textarea class="form-control" id="{{ form.comment.id_for_label }}" rows="3" name="{{ form.comment.name }}"></textarea>
+            </div>
+            <div class="col-12 mb-3">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form> 
+    </div>
+    
+{% endblock comment %}

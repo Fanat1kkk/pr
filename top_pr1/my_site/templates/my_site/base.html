@@ -1,0 +1,90 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="{% static 'my_site/img/favicon.ico' %}" type="image/x-icon">
+  <link rel="stylesheet" href="{% static 'my_site/css/bootstrap.css' %}">
+  <link rel="stylesheet" href="{% static 'my_site/css/style.css' %}">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap" rel="stylesheet">
+
+  <title>{% block title %}Расскрутка соц. сетей{% endblock title %}</title>
+  <script src="//code.jivo.ru/widget/BW6sLRElzi" async></script>
+</head>
+
+<body>
+
+  <!-- Yandex.Metrika counter -->
+  <!-- <script type="text/javascript" >
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+    ym(891699081, "init", {
+        clickmap:true,
+        trackLinks:true,
+        accurateTrackBounce:true,
+        webvisor:true
+    });
+  </script>
+  <noscript><div><img src="https://mc.yandex.ru/watch/89169908" style="position:absolute; left:-9999px;" alt="" /></div></noscript>  -->
+  <!-- /Yandex.Metrika counter--> 
+
+  <div class="wrapper">
+    <header>
+      <div class="container">
+        {% include 'my_site/menu.html' %}
+      </div>
+    </header>
+    <main class="main mt-4 mb-4">
+        <div>
+          {% block  chanhe_password_done%}{% endblock chanhe_password_done %}
+          {% block password_reset_from_key %}{% endblock password_reset_from_key %}
+          {% block password_reset_done %}{% endblock password_reset_done %}
+          {% block password_reset %}{% endblock password_reset %}
+          {% block header_info %}{% endblock header_info %}
+          {% block price %}{% endblock price %}
+          {% block create_order %}{% endblock create_order %}
+          {% block table %}{% endblock table %}
+          {% block profile %}{% endblock profile %}
+          {% block search %}{% endblock search %}
+          {% block faq %}{% endblock faq %}
+          {% block comment %}{% endblock comment %}
+        </div>
+        <!-- Кнопка-триггер модального окна -->
+        <div class="modal fade" id="loginModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="staticBackdropLabel" aria-hidden="true">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Вход</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+              </div>
+              <div class="modal-body">
+                <div id="login-wrap">
+                  {% include 'my_site/login.html' %}
+                </div>
+                <div id="signup-wrap" class="d-none">
+                  {% include 'my_site/signup.html' %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </main>
+    <footer>
+      <hr>
+      <div class="text-center footer_text">
+        <a href="/info">Условия пользования</a>
+      </div>
+    </footer>
+  </div>
+  {% block modal %}{% endblock modal %}
+  <script src="{% static 'my_site/js/bootstrap.bundle.js' %}"></script>
+  <script src="{% static 'my_site/js/m.js' %}"></script>
+</body>
+
+</html>

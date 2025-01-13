@@ -1,20 +1,22 @@
+import json
 from decimal import Decimal
 from django.shortcuts import render, redirect
 from django.conf import settings 
 from django.http import HttpResponse, JsonResponse, Http404
-from django.template.loader import render_to_string
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
+from django.db.models import Prefetch
 
 from allauth.account.views import LoginView, SignupView, PasswordResetFromKeyView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 from payments.models import ProviderPay
 from payments.providers import pm
-from cupons.forms import CuponForm
 
-from .models import Category, Order, Service, CustomerReview
-from .forms import OrderForm, ConfirmOrderForm, MyLogInForm, MySignupForm, PayProfileForm, MyResetPasswordKeyForm, CommentForm
-from .utils import del_zero
+from .models import Category, Order, Service, Subcategory, PromoCode
+from .forms import OrderForm, MyLogInForm, MySignupForm, PayProfileForm, MyResetPasswordKeyForm, CommentForm
+from .serializers import PromoCodeSerializer, ServiceSerializer, SubcategorySerializer, SubcategorySlugSerializer, ServiceInfoSerializer
 from .exceptions import BalanceException
 from .tasks import cancel_order, send_email_register_user
 
@@ -59,10 +61,6 @@ class AjaxSignupView(SignupView):
         else:
             return JsonResponse({'errors': form.errors, 'errors_non_fields': form.non_field_errors()})
 
-
-# class MyPasswordResetView(FormsMixin, PasswordResetView):
-#     template_name: str = 'my_site/account/password_reset.html'
-    
     
 class PasswordResetDoneView(FormsMixin, TemplateView):
     template_name = "my_site/account/password_reset_done.html"
@@ -79,14 +77,15 @@ class MyPasswordResetFromKeyDoneView(FormsMixin, TemplateView):
 
 def index(request):
     categories = Category.objects.all()
-    form = OrderForm(user=request.user)
-    form_login = MyLogInForm()
-    form_signup = MySignupForm()
+    sub_cats = []
+    tariffs = []
+    if len(categories) > 0:
+        sub_cats = categories[0].sub_cat.all()
+        tariffs = Service.objects.filter(sub_cat=sub_cats[0], category=categories[0])
     context = {
         'categories': categories,
-        'form': form,
-        'form_login': form_login,
-        'form_signup': form_signup,
+        'sub_cats': sub_cats,
+        'tariffs' : tariffs,
         'base_url': settings.BASE_URL,
     }
     return render(request=request, template_name='my_site/index.html', context=context)
@@ -101,6 +100,46 @@ def faq(request):
         'base_url': settings.BASE_URL,
     }
     return render(request=request, template_name='my_site/faq.html', context=context)
+
+
+@api_view(['GET'])
+def categories(request, category_slug):
+    try:
+        cat = Category.objects.get(slug=category_slug)
+    except Category.DoesNotExist:
+        return Response([])
+    sub_cats = cat.sub_cat.all()
+    if len(sub_cats) == 0:
+        return Response([])
+    serializer = SubcategorySlugSerializer(sub_cats, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def services_filter(request, social, category):
+    
+    if social and category:
+        tariffs = Service.objects.filter(category__slug=social, sub_cat__slug=category, is_published=True).prefetch_related(
+            'category',
+            Prefetch('category__sub_cat', queryset=Subcategory.objects.filter(slug=category)))
+        serializer = ServiceInfoSerializer(tariffs, many=True)
+        return Response(serializer.data)
+    else: return Response([])
+    
+
+def create_order(request, tarif):
+    try:
+        service = Service.objects.get(slug=tarif)
+    except Service.DoesNotExist:
+        return Http404(request)
+    return render(request=request, template_name='my_site/create_order.html', context={'service': service})
+
+
+def services(request):
+    services = Service.objects.filter(is_published=True)
+    cats = Category.objects.all()
+    return render(request=request, template_name='my_site/services.html', context={'services': services,
+                                                                                   'cats': cats})
 
 
 @csrf_exempt
@@ -121,49 +160,6 @@ def AJAX_profile(request):
                 for error in form.errors[field]:
                     errors.append(error)
             return JsonResponse({'error': errors})
-
-
-def profile(request):
-    form_login = MyLogInForm()
-    form_signup = MySignupForm()
-    context = {
-        'form_login': form_login,
-        'form_signup': form_signup,
-        'base_url': settings.BASE_URL,
-    }
-    if request.method == 'GET':
-        cupon_form = CuponForm()
-        pay_form = PayProfileForm()
-        context.update({
-            'cupon_form': cupon_form,
-            'pay_form': pay_form,
-        })
-        
-    elif request.method == 'POST':
-        cupon_form = CuponForm(user = request.user, data=request.POST)
-        pay_form = PayProfileForm()
-        context.update({
-            'cupon_form': cupon_form,
-            'pay_form': pay_form,
-        })
-
-        if cupon_form.is_valid():
-            cupon = cupon_form.cleaned_data['cupon']
-            cupon.use(request.user)
-            context.update({
-                'cupon': cupon
-            })
-        else:
-            errors = []
-            for field in cupon_form.errors:
-                for error in cupon_form.errors[field]:
-                    errors.append(error)
-            
-            context.update({
-            'cupon_errors': errors
-            })
-        
-    return render(request=request, template_name='my_site/profile/profile.html', context=context)
 
 
 def table_orders(request):
@@ -272,90 +268,109 @@ def AJAX_checked_pay(request):
 
 
 @csrf_exempt
-def AJAX_calculate(request):
-    if request.method == 'POST':
-
-        form = OrderForm(user = request.user, data=request.POST)
-
-        form.is_valid()
-
-        service_error = form.errors.get('service', None)
-        count_error = form.errors.get('count', None)
-        promocode_error = form.errors.get('promocode', None)
-        
-        price = Decimal('0')
-        count = 0
-        errors = {}
-        service_info = {}
-
-        if count_error:
-            errors.update({'count': count_error})
-        else:
-            count = Decimal(str(form.cleaned_data['count']))
-
-        if service_error:
-            errors.update({'service': service_error})
-        else:
-            service = form.cleaned_data['service']
-            service_info.update({'speed': service.speed, 
-                                 'quality': service.quality, 
-                                 'text': service.text_info,
-                                 'is_cancellation': service.is_cancellation})
-
-            if count != 0:
-                price = service.price_per_one() * count
-                
-        if promocode_error:
-            errors.update({'promocode': promocode_error})
-        else:
-            if count != 0:
-                promocode = form.cleaned_data.get('promocode', None)
-                if promocode:
-                    price = promocode.calc(price=price)
-
-        return JsonResponse({'price': del_zero(price), 'errors': errors, 'service_info': service_info})
-
-    return Http404(request)
-
-
-def AJAX_order(request):
+def new_order(request):
     if request.POST:
+        print(request.POST)
         form = OrderForm(user = request.user, data=request.POST)
         if form.is_valid():
             order: Order = form.save()
-            order_form = ConfirmOrderForm(order=order)
-            return JsonResponse({'ok': {'form': render_to_string('my_site/confirm_order.html', {'order': order,
-                                                                                                'order_form': order_form}, request=request),
-                                        'order': order.to_dict()}})
+            return JsonResponse({'success': True, 'order_id': order.order_id})
         else:
             return JsonResponse({'errors': form.errors})
+    
+    return JsonResponse({'success': False, 'error_message': 'Неверный запрос'})
+
+
+def order_confirmation(request, order_id):
+    try:
+        order = Order.objects.get(order_id=order_id, client=request.user)
+        pay_p = []
+        for provider, name in ProviderPay.PROVIDERS:
+            img = next((img for p, img in ProviderPay.IMG if p == provider), None)
+            pay_p.append({
+                'provider': provider,
+                'name': name,
+                'img': img
+            })
+        return render(request=request, template_name='my_site/confirm_order.html', context={'order': order, 
+                                                                                            'pay_p': pay_p})
+    except Order.DoesNotExist:
+        return redirect('index')
+
+
+def order_pay(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': "Server error"}, status=400)
+        form = PayProfileForm(data=data)
+        if form.is_valid():
+            try:
+                order = Order.objects.get(order_id=data.get('order_id'))
+            except Order.DoesNotExist:
+                return JsonResponse({'error': "Server error"}, status=400)
+            if order.status != order.NO_PAY:
+                return JsonResponse({'error', 'Этот заказ уже оплачен!'})
+                
+            pm.create_pay(pay_provider=form.cleaned_data.get('pay_provider'), order=order)
+            if order.transaction and order.transaction.pay_provider == ProviderPay.PRF:
+                try:
+                    order.transaction.pay_from_balance()
+                    
+                    return JsonResponse({'redirect': order.transaction.pay_url})
+
+                except BalanceException as e:
+                    return JsonResponse({'error': str(e)}, status=400)
+
+            if order.transaction and order.transaction.pay_url:
+                return JsonResponse({'redirect': order.transaction.pay_url})
+            return JsonResponse({'redirect': redirect})
+        else:
+            errors = []
+            for field in form.errors:
+                for error in form.errors[field]:
+                    print(field, ': ', error)
+                    errors.append(error)
+            return JsonResponse({'error': errors})
     else:
-        return Http404('Page not found')
+        return JsonResponse({'error': "Server error"}, status=400)
 
 
-def AJAX_get_services(request, cat_id, sub_id):
-    if is_ajax(request):
-        services = Service.objects.filter(sub_cat=sub_id, category=cat_id, is_published=True)
+@api_view(['GET'])
+def get_promocode(request, promocode):
+    try:
+        code = PromoCode.objects.get(code=promocode)
+        if not code.is_active():
+            return Response({'error': 'Промокод не найден'})
+        serializer = PromoCodeSerializer(code)
+        return Response(serializer.data)
+    except PromoCode.DoesNotExist:
+        return Response({'error': 'Промокод не найден'})
         
-        data = dict()
-        data_s = dict()
-        for service in services:
-            data_s.update({service.pk: {
-                'name': service.name,
-                'price': del_zero(service.price_per_one())
-            }})
-        data.update({'data_s': data_s})
-        if len(services) > 0:
-            service = services[0]
-            data.update({'service_info': {'speed': service.speed, 
-                                        'quality': service.quality, 
-                                        'text': service.text_info,
-                                        'is_cancellation': service.is_cancellation}
-                        })
 
-        return JsonResponse(data=data)
-    Http404('Page not found')
+@api_view(['GET'])
+def subcategories_with_services(request, category_slug):
+    # Получаем сервисы, связанные с категорией
+    services_qs = Service.objects.filter(category__slug=category_slug, is_published=True)
 
+    # Получаем подкатегории с предварительной загрузкой сервисов
+    subcategories = Subcategory.objects.prefetch_related(
+        Prefetch('services', queryset=services_qs)
+    ).filter(categories__slug=category_slug)
+
+    # Сериализуем данные
+    serializer = SubcategorySerializer(subcategories, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_tariffs(request, cat_slug, sub_slug):
+    tariffs = Service.objects.filter(category__slug=cat_slug, sub_cat__slug=sub_slug, is_published=True)
+    
+    serializer = ServiceSerializer(tariffs, many=True)
+    return Response(serializer.data)
+    
 
 def AJAX_order_cancel(request):
     if request.method == 'POST' and is_ajax(request=request):
@@ -415,5 +430,3 @@ def add_comment(request, order_id: int):
         
     return redirect('orders')
     
-    
-#https://pay.freekassa.ru/?m=18167&oa=100&currency=RUB&o=123&s=aa8d8d8cf24ff4713ab4dde2890b85e7

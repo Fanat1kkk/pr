@@ -20,6 +20,7 @@ from django.urls import path, include
 urlpatterns = [
     path('tema57486/', admin.site.urls),
     path('', include('my_site.urls')),
-    path('', include('allauth.urls')),
+    path('profile/', include('lk.urls')),
+    path('accounts/', include('allauth.urls')),
     path('pay/', include('payments.urls')),
 ]

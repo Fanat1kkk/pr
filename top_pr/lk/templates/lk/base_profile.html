@@ -1,0 +1,167 @@
+{% extends 'my_site/base.html' %}
+{% load static %}
+
+{% block title %}
+  Личный кабинет
+{% endblock %}
+{% block header %}
+  <header id="header" class="header sticky pb-3 pt-4 mb-0 bg-gray-100 top-0 left-0 w-full z-50 transition-all duration-100 ease-in-out">
+    <!-- Overlay для затемнения -->
+    <div id="overlay" class="fixed inset-0 bg-gray-500 bg-opacity-50 hidden"></div>
+    <!-- Блок меню -->
+    <nav>
+      <div class="container items-center flex justify-between">
+        <div>
+          <a href="#"><img src="{% static 'my_site/img/logo.png' %}" alt="logo" class="xs:h-7 xs:w-14" /></a>
+        </div>
+
+        <!-- DESKTOP MENU -->
+        <div>
+          <ul class="sm:hidden flex gap-14 md:gap-9 text-sm text-slate-900 font-medium">
+            <li>
+              <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Главаная</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Услуги</a>
+            </li>
+            <li>
+              <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Отзывы</a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- MOBILE MENU -->
+        <div id="mobile-menu" class="fixed top-0 left-0 h-full w-64 bg-white transform -translate-x-full transition-transform duration-300">
+          <div class="text-center text-slate-500 px-3">
+            <img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-14 w-14 mx-auto mt-5 mb-4" />
+            <span>{{ user.username|default:'Noname' }}</span>
+            <span>{{ user.email }}</span>
+            <div>
+              <div class="flex justify-between items-center mt-8">
+                <div>
+                  <div class="text-base text-blue-700 font-poppins font-semibold mb-1">{{ user.get_balance }} ₽</div>
+                  <div class="text-sm text-slate-600 overline">Баланас</div>
+                </div>
+                <div>
+                  <img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="h-10 w-10" />
+                </div>
+              </div>
+              <button id="submitButton" class="text-white w-full mt-7 bg-gradient-to-r from-fuchsia-500 to-blue-500 hover:from-blue-500 hover:to-fuchsia-500 py-2 rounded-lg tracking-wide transition-all duration-500" disabled>Создать заказ</button>
+            </div>
+            <div class="border-t border-gray-300 mt-8 mb-6"></div>
+            <div>
+              <ul class="flex flex-col gap-7 items-start">
+                <li class="flex gap-4 items-center">
+                  <img src="{% static 'my_site/img/orders.svg' %}" alt="orders" class="h-5 w-5" />
+                  <a href="{% url 'profile' %}" class="text-sm text-slate-600 hover:text-slate-900">Мои заказы</a>
+                </li>
+                <li class="flex gap-4 items-center">
+                  <img src="{% static 'my_site/img/pay.svg' %}" alt="pay" class="h-5 w-5" />
+                  <a href="{% url 'pay-balance' %}" class="text-sm text-slate-600 hover:text-slate-900">Пополнить баланс</a>
+                </li>
+                <li class="flex gap-4 items-center">
+                  <img src="{% static 'my_site/img/settings.svg' %}" alt="settings" class="h-5 w-5" />
+                  <a href="#" class="text-sm text-slate-600 hover:text-slate-900">Настройки</a>
+                </li>
+                <li class="flex gap-4 items-center">
+                  <img src="{% static 'my_site/img/help.svg' %}" alt="help" class="h-5 w-5" />
+                  <a href="#" class="text-sm text-slate-600 hover:text-slate-900">Помощь</a>
+                </li>
+              </ul>
+              <div class="border-t border-gray-300 my-6"></div>
+              <div class="text-left flex gap-4 items-center">
+                <img src="{% static 'my_site/img/exit.svg' %}" alt="exit" class="h-5 w-5" />
+                <a href="{% url 'account_logout' %}" class="text-sm text-slate-600 hover:text-slate-900">Выход</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sm:hidden text-sm flex gap-10 items-center">
+          <div class="md:hidden flex items-center text-slate-500">
+            <span>Баланс:</span>
+            <span class="mx-1 font-semibold text-slate-900">{{ user.get_balance }}</span><span class="text-slate-900">₽</span>
+            <a href="#"><img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="h-6 w-6 ml-3" /></a>
+          </div>
+
+          <div class="flex items-center text-slate-500">
+            <span>{{ user.email }}</span>
+            <a href="#"><img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-6 w-6 ml-3" /></a>
+          </div>
+        </div>
+
+        <!-- Бургер меню -->
+        <button id="burger" class="hidden md:block group relative h-5 w-[30px]">
+          <span class="absolute top-0 left-1/2 h-[3px] w-full bg-black rounded-full transition-all duration-300 ease-in-out translate-x-[-50%] group-[.active]:translate-y-[8px] group-[.active]:rotate-45"></span>
+          <span class="absolute top-1/2 left-1/2 h-[3px] w-full bg-black rounded-full transition-all duration-300 ease-in-out translate-x-[-50%] translate-y-[-50%] group-[.active]:opacity-0"></span>
+          <span class="absolute bottom-0 left-1/2 h-[3px] w-full bg-black rounded-full transition-all duration-300 ease-in-out translate-x-[-50%] group-[.active]:-translate-y-[8px] group-[.active]:-rotate-45"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+{% endblock %}
+{% block main %}
+  <div class="container">
+    <div class="flex justify-between gap-1">
+      <div class="md:hidden h-fit w-80 bg-white pb-20">
+        <div class="text-center text-slate-500 px-3">
+          <div class="flex flex-col justify-center">
+            <img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-14 w-14 mx-auto mt-5 mb-3 cursor-pointer" />
+            <span class="mb-1">{{ user.username|default:'Noname' }}</span>
+            <span>{{ user.email }}</span>
+          </div>
+          <div>
+            <div class="flex justify-between items-center mt-8">
+              <div>
+                <div class="text-base text-blue-700 font-poppins font-semibold mb-1">{{ user.get_balance }} ₽</div>
+                <div class="text-sm text-slate-600 overline">Баланас</div>
+              </div>
+              <div>
+                <img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="h-10 w-10 cursor-pointer" />
+              </div>
+            </div>
+            <a href="{% url 'new-order-profile' %}"><button id="submitButton" class="text-white cursor-pointer w-full mt-7 bg-gradient-to-r from-fuchsia-500 to-blue-500 hover:from-blue-500 hover:to-fuchsia-500 py-2 rounded-lg tracking-wide transition-all duration-500">Создать заказ</button></a>
+          </div>
+          <div class="border-t border-gray-300 mt-8 mb-6"></div>
+          <div>
+            <ul class="flex flex-col gap-7 items-start">
+              <li class="flex gap-4 items-center">
+                <img src="{% static 'my_site/img/orders.svg' %}" alt="orders" class="h-5 w-5" />
+                <a href="{% url 'profile' %}" class="text-sm text-slate-600 hover:text-slate-900">Мои заказы</a>
+              </li>
+              <li class="flex gap-4 items-center">
+                <img src="{% static 'my_site/img/pay.svg' %}" alt="pay" class="h-5 w-5" />
+                <a href="{% url 'pay-balance' %}" class="text-sm text-slate-600 hover:text-slate-900">Пополнить баланс</a>
+              </li>
+              <li class="flex gap-4 items-center">
+                <img src="{% static 'my_site/img/settings.svg' %}" alt="settings" class="h-5 w-5" />
+                <a href="{% url 'settings' %}" class="text-sm text-slate-600 hover:text-slate-900">Настройки</a>
+              </li>
+              <li class="flex gap-4 items-center">
+                <img src="{% static 'my_site/img/help.svg' %}" alt="help" class="h-5 w-5" />
+                <a href="{% url 'settings' %}" class="text-sm text-slate-600 hover:text-slate-900">Помощь</a>
+              </li>
+            </ul>
+            <div class="border-t border-gray-300 my-6"></div>
+            <div class="text-left flex gap-4 items-center">
+              <img src="{% static 'my_site/img/exit.svg' %}" alt="exit" class="h-5 w-5" />
+              <a href="{% url 'account_logout' %}" class="text-sm text-slate-600 hover:text-slate-900">Выход</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white w-full">
+        <h1 class="text-center mt-4 mb-4 text-xl text-gray-500">{% block header_main %}{% endblock header_main %}</h1>
+        <div class="border-t border-gray-300 mb-6"></div>
+        <div>
+          {% block content %}
+
+          {% endblock %}
+        </div>
+      </div>    
+    </div>
+  </div>
+{% endblock %}
+{% block main_script %}
+  <script src="{% static 'lk/js/main.js' %}"></script>
+{% endblock %}

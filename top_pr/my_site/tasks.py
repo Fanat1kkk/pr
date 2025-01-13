@@ -12,6 +12,7 @@ from celery import shared_task
 def create_task_in_provider():
     # Бёрет задания из базы данных и создаёт их у провайдера
     tasks_in_work = Task.objects.filter(status=Task.WAITSTART, is_created=False, is_error=False, service__is_published = True)
+    print('Заказов в работе: ', len(tasks_in_work))
     if len(tasks_in_work) > 0:
         pm.create_orders(tasks=tasks_in_work)
 
@@ -46,6 +47,7 @@ def update_status_orders():
             providers_dict.update({provider.name: [task.provider_order_id for task in tasks]})
             tasks_in_work += tasks.count()
     # Если нет активных заданий
+    print('Активных заданий: ', len(providers_dict))
     if len(providers_dict) == 0:
         return
     data_providers = pm.update_orders_status(tasks=providers_dict)
@@ -58,7 +60,6 @@ def update_status_orders():
         for order_id in data_tasks:
             db_task: Task = db_tasks.get(provider_order_id=int(order_id))
             data_task = data_tasks[order_id]
-            print('update_status_orders 5')
             db_task.update_task(data_task)
 
 
@@ -79,6 +80,7 @@ def send_email_register_user(email: str):
 
     send_mail(subject=f'Регистрация на {settings.BASE_URL}', message=text, from_email=settings.EMAIL_HOST_USER, 
               recipient_list=[email])
+
 
 @shared_task
 def send_email(subject, message, recipient_list):

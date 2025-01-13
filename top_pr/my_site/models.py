@@ -122,7 +122,6 @@ class Client(AbstractUser):
             self.save()
             logger.info(f'{self.email} пополнил баланс на {del_zero(sum)}:({comment})')
         
-
     def remove_balance(self, sum: Decimal, comment: str = None, save: bool=True):
         if self.balance < sum:
             raise BalanceException('Не достаточно средст на балансе')
@@ -137,6 +136,8 @@ class Client(AbstractUser):
     def get_balance(self):
         return self.balance
     
+    def get_orders(self):
+        return self.orders.all()
 
     def email_verified(self):
         pass
@@ -152,6 +153,7 @@ class Client(AbstractUser):
 class Category(models.Model):
     cat_name = models.CharField(verbose_name='Название', max_length=30)
     sub_cat = models.ManyToManyField('Subcategory', related_name='categories')
+    slug = models.SlugField(blank=True, unique=True)
     img = models.CharField(verbose_name='Картинка', max_length=4, choices=IMG_LINKS)
 
     def __str__(self) -> str:
@@ -199,6 +201,7 @@ class CustomerReview(models.Model):
 class Service(models.Model):
 
     name = models.CharField(verbose_name='Название', max_length=30)
+    slug = models.SlugField(blank=True, null=True, unique=False)
     category = models.ForeignKey(Category, verbose_name='Категория', related_name='services', on_delete=models.CASCADE)
     sub_cat = models.ForeignKey('Subcategory', verbose_name='Подкатегория', related_name='services', on_delete=models.CASCADE)
     service_id = models.IntegerField(verbose_name='Сервис ID', null=False, unique=True)
@@ -206,9 +209,13 @@ class Service(models.Model):
     max_count = models.IntegerField(verbose_name='Максимум')
     #Скорость накрутки
     speed = models.IntegerField(verbose_name='Скорость накрутки', default=5)
+    #Количество накрутки в сутки
+    speed_day = models.IntegerField(verbose_name='Количество в сутки', default=0)
     #Оценка качества
     quality = models.IntegerField(verbose_name='Качество', default=5)
     text_info = RichTextField(verbose_name='Инфо', null=True, blank=True)
+    text_pre_info = models.CharField(verbose_name='Инфо коротко', null=True, blank=False, max_length=100)
+    link_p = models.CharField(verbose_name='Пример ссылки', max_length=100)
     # Цена за 1000 штук
     price = models.DecimalField(verbose_name='Цена за 1000 шт.', max_digits=8, decimal_places=2)
     percent = models.IntegerField(verbose_name='Процент накрутки', default=50)
@@ -223,6 +230,9 @@ class Service(models.Model):
         '''
         # r = (Decimal('1') + Decimal(self.percent) / Decimal('100')) * (self.price / Decimal('1000'))
         return (((self.price / Decimal('100')) * self.percent) + self.price) / 1000
+    
+    def price_1000(self) -> Decimal:
+        return self.price_per_one()*1000
         
     def full_name(self):
         return f'{self.sub_cat.name} {self.category.cat_name}'
@@ -237,6 +247,7 @@ class Service(models.Model):
 
 class Subcategory(models.Model):
     name = models.CharField(verbose_name='Назвение', max_length=35, unique=True)
+    slug = models.SlugField(blank=True, null=True, unique=False)
     img = models.CharField(verbose_name='Картинка', max_length=4, choices=IMG_LINKS, null=True, blank=True)
 
     def __str__(self) -> str:
@@ -358,7 +369,6 @@ class Order(ABSOrderTask):
         logger.info(f'{self.client.email} оплатил заказ {self.order_id}')
         return True
 
-
     def set_status(self, task_status: ABSOrderTask, save: bool = False):
         'Изменяет статус заказа в зависимости от статуса Task'
         if task_status == self.WAITSTART:
@@ -404,7 +414,7 @@ class Order(ABSOrderTask):
 
     def get_price_end_count(self) -> Decimal:
         price = self.get_price_per_one()
-        return price*self.end_count
+        return del_zero(price*self.end_count)
 
     def get_price_end_count_from_display(self) -> Decimal:
         r = self.get_price_end_count()

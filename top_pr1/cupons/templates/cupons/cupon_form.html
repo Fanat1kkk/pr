@@ -1,0 +1,24 @@
+<div class="col-6 m-auto border-top pt-2 mt-5">
+    <div class="text-center mt-2 mb-3 lk-section-title">Погасить купон</div>
+    {% if cupon_form.errors %}
+        <div class="text-danger d-flex justify-content-center">
+            {{ cupon_form.errors.cupon }}
+        </div>
+    {% elif cupon %}
+        <div class="text-success d-flex justify-content-center">
+            Баланс пополнен на {{ cupon.bonus }} руб.
+        </div>
+    {% endif %}
+    <form action="{% url 'profile' %}" method="post" class="row justify-content-center">
+        {% csrf_token %}
+
+        <div class="col-auto">
+            <label for="{{ cupon_form.cupon.id_for_label }}" class="col-form-label">Ваш купон</label>
+            {{ cupon_form.cupon }}
+        </div>
+        <div class="col-auto align-self-end">
+            <button type="submit" class="btn btn-primary mt-3">Погасить</button>
+        </div>
+        
+    </form>
+</div>

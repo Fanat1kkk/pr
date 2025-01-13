@@ -29,6 +29,11 @@ class ProviderPay():
         (YOOM, 'Yoommany'),
         (PRF, 'Баланс'),
     ]
+    
+    IMG = [
+        (YOOM, 'iomoney.svg'),
+        (PRF, 'wallet.svg')
+    ]
                 
 class TransactionManager(models.Manager):
     

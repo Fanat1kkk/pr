@@ -1,0 +1,23 @@
+
+<form action="{% url 'orders_search' %}" method="GET">
+    <div class="d-flex flex-column align-items-center">
+        <p class="mb-2">
+            Вы можете найти все ваши заказы по адресу электронной почты
+        </p>
+        <div class="col-4">
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+        </div>
+        <div class="d-flex col-8 col-lg-4 justify-content-center">
+            <div class="col-12 pe-2">
+                <input type="email" name="email" class="form-control" placeholder="Электронная почта" aria-label="Электронная почта">
+            </div>
+            <div>
+                <button type="submit" class="btn btn-success">Найти</button>
+            </div>
+        </div>
+    </div>
+</form>

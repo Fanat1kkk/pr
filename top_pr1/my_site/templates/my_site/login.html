@@ -1,0 +1,26 @@
+<form method="POST", action="{% url 'my_login' %}" id="form-log-in" class="">
+    {% csrf_token %}
+    <div class="alert alert-warning d-none" role="alert" id="login-alert">
+        Не верный емаил или пароль.
+    </div>
+    <div class="mb-3">
+        <label for="{{ form_login.login.id_for_label }}" class="form-label">Адрес электронной почты</label>
+        {{ form_login.login }}
+        <div class="invalid-feedback" id="login_error"></div>
+    </div>
+    <div class="mb-3">
+        <label for="{{ form_login.password.id_for_label }}" class="form-label">Пароль</label>
+        {{ form_login.password }}
+        <div class="invalid-feedback" id="password_error"></div>
+    </div>
+    <div class="form-row mb-3">
+        <button type="button" class="btn btn-primary col-12" id="btn-log-in">Войти</button>
+    </div>
+    <div class="mb-2">
+        <a href="{% url 'account_reset_password' %}">Востановить пароль?</a>
+    </div>
+    <p class="mb-1">Еще не зарегистрированы?</p>
+    <div class="form-row">
+        <button type="button" class="btn btn-success col-12" id="btn-s-signup">Регистрация</button>
+    </div>
+</form>
