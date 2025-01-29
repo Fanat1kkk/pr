@@ -142,7 +142,6 @@ class OrderForm(forms.ModelForm):
 
     def clean_promocode(self):
         promocode = self.cleaned_data.get('promocode', None)
-        print('promocode: ', promocode)
         
         if promocode and not promocode.is_active():
             raise forms.ValidationError('Код не действительный')

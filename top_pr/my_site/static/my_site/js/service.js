@@ -164,25 +164,50 @@ document.addEventListener('click', function () {
 });
 
 
+// // Открытие модального окна
+// function openModal(event) {
+//     const modal = document.getElementById('modal');
+//     let textInfo = document.getElementById('textInfo');
+//     let speedDay = document.getElementById('speedDay');
+//     speedDay.innerHTML = `До ${event.target.dataset.speedday} в день.`
+//     textInfo.innerHTML = event.target.dataset.info
+//     modal.classList.remove('hidden');
+//     modal.classList.add('flex');
+// }
+
+// // Закрытие модального окна
+// function closeModal(event) {
+//     const modal = document.getElementById('modal');
+//     if (!event || event.target === modal) {
+//         modal.classList.add('hidden');
+//         modal.classList.remove('flex');
+//     }
+// }
+
+
+
 // Открытие модального окна
 function openModal(event) {
     const modal = document.getElementById('modal');
-    let textInfo = document.getElementById('textInfo');
-    let speedDay = document.getElementById('speedDay');
-    speedDay.innerHTML = `До ${event.target.dataset.speedday} в день.`
-    textInfo.innerHTML = event.target.dataset.info
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
+    const textInfo = document.getElementById('textInfo');
+    const speedDay = document.getElementById('speedDay');
+
+    speedDay.innerHTML = `До ${event.target.dataset.speedday} в день.`;
+    textInfo.innerHTML = event.target.dataset.info;
+
+    modal.classList.remove('hidden', 'opacity-0');
+    modal.classList.add('flex', 'opacity-100', 'transition-opacity', 'duration-300');
 }
 
 // Закрытие модального окна
 function closeModal(event) {
     const modal = document.getElementById('modal');
     if (!event || event.target === modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
+        modal.classList.remove('opacity-100');
+        modal.classList.add('opacity-0');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 300); // Длительность должна совпадать с `duration-300`
     }
 }
-
-
-

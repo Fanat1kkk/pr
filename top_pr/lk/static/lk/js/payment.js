@@ -87,3 +87,47 @@ function getCSRFToken() {
     }
     return "";
 }
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    let currentPage = 1; // Текущая страница
+
+    const loadMoreButton = document.getElementById('loadHistory');
+    const tbody = document.querySelector('tbody.divide-y');
+
+    // Функция для загрузки данных
+    async function loadPage(page) {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/profile/history-pay/${page}`);
+            const data = await response.json();
+
+            if (data.ok) {
+                // Если запрос успешный, добавляем содержимое в таблицу
+                tbody.innerHTML += data.ok.html;
+                if (data.ok.next_page) {
+                    console.log('true')
+                    loadMoreButton.classList.remove('hidden');
+                } else {
+                    console.log('false')
+                    loadMoreButton.classList.add('hidden');
+                }
+            } else if (data.error) {
+                // Если есть ошибка, выводим сообщение
+                console.log(`Ошибка: ${data.error}`);
+            }
+        } catch (error) {
+            // Обработка ошибок запроса
+            console.error('Ошибка при загрузке данных:', error);
+            alert('Не удалось загрузить данные. Попробуйте снова.');
+        }
+    }
+
+    // Автоматическая загрузка первой страницы при загрузке страницы
+    await loadPage(currentPage);
+
+    // Загрузка следующей страницы при нажатии на кнопку
+    loadMoreButton.addEventListener('click', async () => {
+        currentPage++; // Увеличиваем номер страницы
+        await loadPage(currentPage);
+    });
+});

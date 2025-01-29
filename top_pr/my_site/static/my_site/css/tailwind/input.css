@@ -4,12 +4,9 @@
 
 @layer components {
     .container {
-        @apply max-w-[1200px]
-    }
-    @screen xs {
-      .container {
-        @apply;
-      }
+        @apply max-w-[1200px];
+        /* @apply sm:bg-red-500;
+        @apply sm:w-full */
     }
 }
 
@@ -27,4 +24,12 @@
 
 .footer-link {
     @apply text-gray-700 hover:text-gray-950;
+}
+
+.container-pr {
+  /* @apply max-w-[1200px];
+  @apply sm:w-full */
+  @apply container;
+  @apply sm:bg-red-500;
+  @apply sm:p-0;
 }

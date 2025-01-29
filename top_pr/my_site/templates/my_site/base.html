@@ -15,9 +15,9 @@
     </title>
   </head>
 
-  <body class="font-lato">
+  <body class="font-lato min-h-screen flex flex-col">
     {% block header %}
-      <header id="header" class="header sticky pb-3 pt-4 mb-0 bg-gray-100 top-0 left-0 w-full z-50 transition-all duration-100 ease-in-out">
+      <header id="header" class="header sticky pb-3 pt-4 mb-0 bg-gray-100 top-0 left-0 w-full z- transition-all duration-100 ease-in-out">
         <!-- Блок меню -->
         <nav>
           <div class="container items-center flex justify-between">
@@ -42,7 +42,7 @@
 
             <!-- MOBILE MENU -->
 
-            <div class="nav-links duration-500 hidden absolute bg-white left-0 w-full sm:flex items-center px-5 top-[-100vh] transition-transform transform">
+            <div class="nav-links duration-500 hidden absolute bg-white left-0 w-full sm:flex items-center px-5 top-[-100vh] transition-transform transform z-50">
               <ul class="flex flex-col pb-5 mt-5 gap-5 items-start text-base text-slate-900 font-medium">
                 <li>
                   <a href="{% url 'index' %}" class="hover:text-blue-600 transition-colors tracking-wide">Главаная</a>
@@ -76,7 +76,8 @@
         </nav>
       </header>
     {% endblock %}
-    <main class="bg-gray-100 xs:pt-8">
+
+    <main class="bg-gray-100 xs:pt-8 flex-1">
       {% block main %}
 
       {% endblock %}
@@ -97,10 +98,14 @@
       {% endblock %}
       {% block profile %}
 
+      {% block oferta %}
+      {% endblock oferta %}
+
       {% endblock %}
       <div id="toast-container" class="fixed top-16 right-5 space-y-4 z-50"></div>
       <script src="{% static 'my_site/js/alert.js' %}"></script>
     </main>
+
     {% comment %} <footer class="bg-gray-100 py-6 text-start text-gray-600">
       <div class="container flex justify-between">
         <div>
@@ -112,8 +117,8 @@
         </div>
         <div class="flex flex-col gap-3 text-sm sm:text-xs">
           <a href="#" class="footer-link">Политика конфиденциальности</a>
-          <a href="#" class="footer-link">Публичная оферта</a>
-          <a href="#" class="footer-link">Политика cookies</a>
+          <a href="{% url 'oferta' %}" class="footer-link">Публичная оферта</a>
+          <a href="{% url 'policy' %}" class="footer-link">Политика cookies</a>
           <a href="#" class="footer-link">Карта сайта</a>
         </div>
         <div class="sm: mr-3">
@@ -142,6 +147,7 @@
       </div>
       <p class="container text-xs">© 2024 Все права защищены</p>
     </footer> {% endcomment %}
+    
     <footer>
       <div class="bg-gray-700 py-4 text-gray-400">
         <div class="container px-4 mx-auto">
@@ -160,10 +166,10 @@
                   <a href="#" class="hover:text-blue-400">Политика конфиденциальности</a>
                 </li>
                 <li>
-                  <a href="#" class="hover:text-blue-400">Публичная оферта</a>
+                  <a href="{% url 'oferta' %}" class="hover:text-blue-400">Публичная оферта</a>
                 </li>
                 <li>
-                  <a href="#" class="hover:text-blue-400">Политика cookies</a>
+                  <a href="{% url 'policy' %}" class="hover:text-blue-400">Политика cookies</a>
                 </li>
                 <li>
                   <a href="#" class="hover:text-blue-400">Карта сайта</a>

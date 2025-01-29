@@ -4,11 +4,10 @@
 {% block create_order %}
   <!-- Первый блок -->
   <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
-  <main class="bg-gray-100 xs:pt-8">
     <div class="flex items-center justify-center">
-      <div class="flex sm:flex-col w-full max-w-4xl gap-10 sm:gap-0">
+      <div class="flex sm:flex-col max-w-4xl gap-10 sm:gap-0">
         <!-- Форма оформления заказа -->
-        <div class="flex-1 p-4">
+        <div class="flex-col w-1/2 sm:w-full xs:min-w-[280px] p-4">
           {% csrf_token %}
           <!-- ССЫЛКА -->
           <div class="mb-6">
@@ -65,7 +64,7 @@
           <button id="submitButton" onclick="createOrder()" class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500">Создать заказ</button>
         </div>
         <!-- Описание услуги -->
-        <div class="flex-none w-1/3 sm:min-w-[70%] p-4 border border-gray-200 rounded-lg mt-12 h-fit">
+        <div class="flex-none w-1/2 sm:w-full p-4 border border-gray-200 rounded-lg mt-12 h-fit">
           <h2 class="text-[#282c4b] text-2xl font-medium">Об услуге</h2>
           <div class="border-t border-gray-200 my-5"></div>
           <div>{{ service.text_info|safe }}</div>
@@ -75,7 +74,7 @@
 
     <!-- Скрытые элементы для передачи значений -->
     <div id="serviceData" style="display: none;" data-serviceid="{{ service.service_id }}" data-min-count="{{ service.min_count }}" data-max-count="{{ service.max_count }}" data-price="{{ service.price_per_one }}" data-promo="0"></div>
-  </main>
+
 {% endblock %}
 
 {% block script_js %}

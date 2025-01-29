@@ -1,5 +1,7 @@
 env
 .vscode
+top_pr1
+node_modules
 top_pr/test.py
 top_pr/test_redis.py
 top_pr/db.sqlite3
@@ -9,6 +11,9 @@ top_pr/start_gunicorn.sh
 top_pr/test.html
 top_pr/start_gunicorn.sh
 top_pr/.env
+package-lock.json
+package.json
+tailwind.config.js
 debug.log
 dump.rdb
 .req.txt

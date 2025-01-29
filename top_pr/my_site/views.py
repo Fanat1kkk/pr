@@ -2,7 +2,7 @@ import json
 from decimal import Decimal
 from django.shortcuts import render, redirect
 from django.conf import settings 
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, Http404, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 from django.db.models import Prefetch
@@ -430,3 +430,9 @@ def add_comment(request, order_id: int):
         
     return redirect('orders')
     
+
+def oferta(request: HttpRequest):
+    return render(request=request, template_name='my_site/oferta.html')
+
+def policy(request: HttpRequest):
+    return render(request=request, template_name='my_site/policy.html')

@@ -1,11 +1,12 @@
 import json
 
 from django.http import Http404, JsonResponse, HttpRequest
+from django.template.loader import render_to_string
 from django.shortcuts import render, redirect
-from django.conf import settings 
 from django.http.request import HttpRequest
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator, InvalidPage
 
 from .forms import PasswordChangeForm, UserUpdateForm
 from my_site.models import *
@@ -63,7 +64,6 @@ def order_confirmation(request, order_id):
     
 @login_required(login_url='account_login')
 def pay_balance(request):
-    # return JsonResponse({'error': 'errors'})
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -127,20 +127,6 @@ def order_cancel(request: HttpRequest):
             return JsonResponse({'error': 'Заказ не может быть отменён'})
 
 
-# @login_required(login_url='account_login')
-# def settings(request: HttpRequest):
-#     if request.method == 'POST':
-#         form = UserUpdateForm(request.POST, instance=request.user)
-#         if form.is_valid():
-#             form.save()
-#             redirect('settings')
-#     else:
-#         form = UserUpdateForm(instance=request.user)
-        
-            
-#     return render(request=request, template_name='lk/settings.html', context={'form': form})
-
-
 @login_required(login_url='account_login')
 def settings(request):
     if request.method == 'POST':
@@ -172,3 +158,20 @@ def settings(request):
             'password_form': password_form,
         }
     )
+
+
+@login_required(login_url='account_login')
+def listing_history_pay(request: HttpRequest, page:int):
+    transactions = request.user.transactions.profile_payments()
+    paginator = Paginator(transactions, 10)
+    try:
+        r_page = paginator.page(page)
+        next_page = r_page.has_next()
+        html = render_to_string(template_name='lk/listing_pay.html', context={'page':r_page})
+    except InvalidPage:
+        return JsonResponse({'error': 'Invalid Page'})
+    
+    return JsonResponse({'ok': 
+                         {'html': html,
+                          'next_page': next_page}
+                         })

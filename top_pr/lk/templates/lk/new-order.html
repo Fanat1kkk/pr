@@ -12,9 +12,9 @@
       <div class="">
         <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
         <div class="flex items-center justify-center">
-          <div class="flex sm:flex-col w-full max-w-4xl gap-10 sm:gap-0">
+          <div class="flex sm:flex-col w-full max-w-4xl gap-3">
             <!-- Форма оформления заказа -->
-            <div class="flex-1 p-4">
+            <div class="flex-col w-1/2 sm:w-full">
               {% csrf_token %}
               <!-- Социальная сеть -->
               <div class="mb-6">
@@ -125,7 +125,7 @@
                   <label for="numberInput" class="block text-sm font-semibold text-black mb-[14px]">Количество</label>
                   <div class="flex items-center">
                     <button id="decrease" class="text-xl text-gray-700 px-4 xs:px-3 py-3 xs:py-2 border border-gray-300 rounded-l-md">-</button>
-                    <input id="numberInput" type="text" value="{{ tariffs.0.min_count }}" class="text-xl w-24 text-center text-gray-600 px-3 py-3 border-t border-b border-gray-300 focus:ring-0 focus:outline-none" pattern="\d*" inputmode="numeric" />
+                    <input id="numberInput" type="text" value="{{ tariffs.0.min_count }}" class="text-xl w-24 text-center text-gray-600 px-3 py-3 xs:py-2 border-t border-b border-gray-300 focus:ring-0 focus:outline-none" pattern="\d*" inputmode="numeric" />
                     <button id="increase" class="text-xl text-gray-700 px-4 xs:px-3 py-3 xs:py-2 border border-gray-300 rounded-r-md">+</button>
                   </div>
                   <div class="flex items-center gap-3 mt-2">
@@ -157,7 +157,7 @@
               <button id="submitButton" class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500" onclick="createOrder()">Создать заказ</button>
             </div>
             <!-- Описание услуги -->
-            <div class="flex-none w-1/3 sm:min-w-[70%] p-4 border border-gray-200 rounded-lg mt-12 h-fit">
+            <div class="flex-none w-1/2 sm:min-w-full border p-3 mt-9 border-gray-200 bg-gray-50 rounded-lg h-fit">
               <h2 class="text-[#282c4b] text-2xl font-medium">Об услуге</h2>
               <div class="border-t border-gray-200 my-5"></div>
               <h3 id="tariffDiscription">{{ tariffs.0.text_info|safe }}</h3>

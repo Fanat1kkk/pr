@@ -1,6 +1,6 @@
 from random import choice
 
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 
 from my_site.models import Order, Client
@@ -37,17 +37,23 @@ class ProviderPay():
                 
 class TransactionManager(models.Manager):
     
-    def create(self, **kwargs):
+    # def create(self, **kwargs):
+    #     '''
+    #     При создании ещё одной транзакции для данного заказа, всем остальным назначается is_active=False
+    #     Тем самым обеспечивает всегда 1 активную трназакцию для заказа
+    #     '''
+    #     trn = super().create(**kwargs)
+    #     for t in self.filter(order=trn.order, is_active=True):
+    #         if t.pk != trn.pk:
+    #             t.is_active = False
+    #             t.save()
+    #     return trn
+    
+    def profile_payments(self, **kwargs):
         '''
-        При создании ещё одной транзакции для данного заказа, всем остальным назначается is_active=False
-        Тем самым обеспечивает всегда 1 активную трназакцию для заказа
+        Возвращает все транзакции созданые при пополнения баланса аккаунта
         '''
-        trn = super().create(**kwargs)
-        for t in self.filter(order=trn.order, is_active=True):
-            if t.pk != trn.pk:
-                t.is_active = False
-                t.save()
-        return trn
+        return self.filter(pay_type='LK').order_by('-date_create')
             
 
 class Transaction(models.Model):
@@ -78,7 +84,7 @@ class Transaction(models.Model):
     date_create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     date_paid = models.DateTimeField(verbose_name='Дата оплаты', null=True)
 
-    # objects = TransactionManager()
+    objects = TransactionManager()
 
     def paid(self):
         '''
@@ -111,7 +117,6 @@ class Transaction(models.Model):
         Подверждения платежа за заказ
         '''
         self.order.add_in_worck()
-
 
     def pay_from_balance(self):
         '''

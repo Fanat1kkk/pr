@@ -38,27 +38,41 @@
         <div>
           <h3 class="text-gray-600 mb-4">История платежей</h3>
           <div class="bg-gray-50 rounded-md overflow-x-auto">
-            <p class="text-center">Нет платежей</p>
-            <div class="overflow-x-auto text-center">
-              <table class="overflow-auto min-w-full divide-y divide-gray-200">
-                <tbody class="divide-y divide-gray-200">
-                  <tr>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                      <div class="text-sm xs:text-xs font-medium text-gray-900">12.10.2024</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                      <div class="text-sm xs:text-xs font-medium text-gray-900">500р</div>
-                    </td>
-                    <td class="px-4 py-4 whitespace-nowrap">
-                      <div class="text-sm xs:text-xs font-medium text-gray-900">Поступил</div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <table class="w-full table-auto divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Дата</th>
+                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Сумма</th>
+                  <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Статус</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-200">
+              </tbody>
+            </table>
+          </div>
+          <div>
+            <button id="loadHistory" class="text-white cursor-pointer px-4 mt-7 bg-gradient-to-r from-fuchsia-500 to-blue-500 hover:from-blue-500 hover:to-fuchsia-500 py-2 rounded-lg tracking-wide transition-all duration-500 hidden">Загрузить ещё</button>
           </div>
         </div>
       </div>
+
     </div>
   <script src="{% static 'lk/js/payment.js' %}"></script>
 {% endblock %}
+
+<!-- <div class="min-w-80 bg-gray-50">
+  <div>
+    <h3 class="text-gray-600 mb-4">История платежей</h3>
+    <div class="bg-gray-50 rounded-md overflow-x-auto">
+      <div class="overflow-x-auto text-center">
+        <table class="overflow-auto min-w-full divide-y divide-gray-200">
+          <tbody class="divide-y divide-gray-200">
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div>
+      <button id="loadHistory" class="text-white cursor-pointer px-4 mt-7 bg-gradient-to-r from-fuchsia-500 to-blue-500 hover:from-blue-500 hover:to-fuchsia-500 py-2 rounded-lg tracking-wide transition-all duration-500 hidden">Загрузить ещё</button>
+    </div>
+  </div>
+</div> -->

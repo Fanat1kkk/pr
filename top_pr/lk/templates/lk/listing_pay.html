@@ -1,0 +1,23 @@
+{% block content %}
+{% if page.object_list.count > 0 %}
+    {% for t in page.object_list %}
+    <tr>
+        <td class="px-4 py-4 whitespace-nowrap">
+            <div class="text-sm xs:text-xs font-medium text-gray-900">{{ t.date_create }}</div>
+        </td>
+        <td class="px-4 py-4 whitespace-nowrap">
+            <div class="text-sm xs:text-xs font-medium text-gray-900">{{ t.sum }} р.</div>
+        </td>
+        <td class="px-4 py-4 whitespace-nowrap">
+            {% if t.is_paid %}
+            <div class="text-sm xs:text-xs font-medium text-gray-900">Поступил</div>
+            {% else %}
+            <div class="text-sm xs:text-xs font-medium text-gray-900">Не оплачен</div>
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+{% else %}
+    <div>У вас нет платежей</div>
+{% endif %}
+{% endblock content %}

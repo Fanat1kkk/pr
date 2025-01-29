@@ -3,12 +3,11 @@
 {% load custom_filters %}
 
 {% block services %}
-<main class="bg-gray-100 xs:pt-8">
     <!-- Контейнер -->
     <div class="container pb-24">
         <!-- Выпадающие списки -->
-        <div class="w-full pb-14 pt-14">
-            <div class="flex justify-between gap-10">
+        <div class="w-full pb-14 pt-14 xs:pt-4">
+            <div class="flex xs:flex-col justify-between gap-10">
                 <!-- Социальная сеть -->
                 <div class="w-full max-w-lg">
                     <label for="socialNetwork"
@@ -81,25 +80,26 @@
         <div id="tariffCardsContainer" class="grid grid-cols-3 sm:grid-cols-2 xs:grid-cols-1  gap-8 w-full">
 
             {% for service in services %}
-            <div class="bg-white shadow-lg rounded-lg p-6">
-                <div class="flex flex-col items-center">
-                    <img src="{% static "my_site/img/" %}{{ service.category.get_img_display }}" alt="Просмотры" class="w-10 h-10 mb-4">
+            <div class="bg-white shadow-lg rounded-lg p-6 flex flex-col h-full">
+                <div class="flex flex-col items-center flex-grow">
+                    <img src="{% static 'my_site/img/' %}{{ service.category.get_img_display }}" alt="Просмотры" class="w-10 h-10 mb-4">
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ service.category.cat_name }} {{ service.sub_cat.name }}</h3>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ service.name }}</h3>
                     <p class="text-gray-500 mb-4">Цена за 1000 шт: {{ service.price_1000|format_decimal }} ₽</p>
                     <p class="text-sm text-center text-gray-600 mb-6">{{ service.text_pre_info }}</p>
-                    <div class="flex gap-4">
-                        <button onclick="window.open('{% url "create-order" service.slug %}', '_blank')"
+                </div>
+                <div class="flex flex-col">
+                    <button onclick="window.open('{% url 'create-order' service.slug %}', '_blank')"
                             class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition duration-300">Заказать</button>
-                        <button onclick="openModal(event)" data-info="{{ service.text_info }}" data-speedDay="{{ service.speed_day }}"
-                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 px-4 rounded-lg transition duration-300">Подробнее</button>
-                    </div>
+                    <button onclick="openModal(event)" data-info="{{ service.text_info }}" data-speedDay="{{ service.speed_day }}"
+                            class="bg-gray-300 hover:bg-gray-400 text-gray-800 mt-3 py-2 px-4 rounded-lg transition duration-300">Подробнее</button>
                 </div>
             </div>
             {% endfor %}
 
         </div>
     </div>
+    
     <!-- Затемнение фона и само модальное окно -->
     <div id="modal" class="fixed inset-0 bg-gray-800 bg-opacity-50 items-center justify-center hidden" onclick="closeModal(event)">
         <!-- Контейнер модального окна -->
@@ -122,8 +122,6 @@
             <h3 class="text-xl font-medium text-gray-900 my-4">Описание услуги:</h3>
             <div id="textInfo" class="text-gray-600 "></div>
         </div>
-    </div>
-</main>
 {% endblock services %}
 
 {% block script_js %}

@@ -12,17 +12,17 @@
     <nav>
       <div class="container items-center flex justify-between">
         <div>
-          <a href="#"><img src="{% static 'my_site/img/logo.png' %}" alt="logo" class="xs:h-7 xs:w-14" /></a>
+          <a href="{% url 'index' %}"><img src="{% static 'my_site/img/logo.png' %}" alt="logo" class="xs:h-7 xs:w-14" /></a>
         </div>
 
         <!-- DESKTOP MENU -->
         <div>
           <ul class="sm:hidden flex gap-14 md:gap-9 text-sm text-slate-900 font-medium">
             <li>
-              <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Главаная</a>
+              <a href="{% url 'index' %}" class="hover:text-blue-600 transition-colors tracking-wide">Главаная</a>
             </li>
             <li>
-              <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Услуги</a>
+              <a href="{% url 'services' %}" class="hover:text-blue-600 transition-colors tracking-wide">Услуги</a>
             </li>
             <li>
               <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Отзывы</a>
@@ -33,9 +33,11 @@
         <!-- MOBILE MENU -->
         <div id="mobile-menu" class="fixed top-0 left-0 h-full w-64 bg-white transform -translate-x-full transition-transform duration-300">
           <div class="text-center text-slate-500 px-3">
-            <img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-14 w-14 mx-auto mt-5 mb-4" />
-            <span>{{ user.username|default:'Noname' }}</span>
-            <span>{{ user.email }}</span>
+            <div class="flex-col text-left">
+              <img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-14 w-14 mx-auto mt-5 mb-4" />
+              <div class="mb-2">Имя: {{ user.username|default:'Noname' }}</div>
+              <div>Email: {{ user.email }}</div>
+            </div>
             <div>
               <div class="flex justify-between items-center mt-8">
                 <div>
@@ -43,10 +45,10 @@
                   <div class="text-sm text-slate-600 overline">Баланас</div>
                 </div>
                 <div>
-                  <img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="h-10 w-10" />
+                  <a href="{% url 'pay-balance' %}"><img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="h-10 w-10" /></a>
                 </div>
               </div>
-              <button id="submitButton" class="text-white w-full mt-7 bg-gradient-to-r from-fuchsia-500 to-blue-500 hover:from-blue-500 hover:to-fuchsia-500 py-2 rounded-lg tracking-wide transition-all duration-500" disabled>Создать заказ</button>
+              <a href="{% url 'new-order-profile' %}"><button id="submitButton" class="text-white cursor-pointer w-full mt-7 bg-gradient-to-r from-fuchsia-500 to-blue-500 hover:from-blue-500 hover:to-fuchsia-500 py-2 rounded-lg tracking-wide transition-all duration-500">Создать заказ</button></a>
             </div>
             <div class="border-t border-gray-300 mt-8 mb-6"></div>
             <div>
@@ -61,7 +63,7 @@
                 </li>
                 <li class="flex gap-4 items-center">
                   <img src="{% static 'my_site/img/settings.svg' %}" alt="settings" class="h-5 w-5" />
-                  <a href="#" class="text-sm text-slate-600 hover:text-slate-900">Настройки</a>
+                  <a href="{% url 'settings' %}" class="text-sm text-slate-600 hover:text-slate-900">Настройки</a>
                 </li>
                 <li class="flex gap-4 items-center">
                   <img src="{% static 'my_site/img/help.svg' %}" alt="help" class="h-5 w-5" />
@@ -81,12 +83,12 @@
           <div class="md:hidden flex items-center text-slate-500">
             <span>Баланс:</span>
             <span class="mx-1 font-semibold text-slate-900">{{ user.get_balance }}</span><span class="text-slate-900">₽</span>
-            <a href="#"><img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="h-6 w-6 ml-3" /></a>
+            <a href="{% url 'pay-balance' %}"><img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="h-6 w-6 ml-3" /></a>
           </div>
 
           <div class="flex items-center text-slate-500">
             <span>{{ user.email }}</span>
-            <a href="#"><img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-6 w-6 ml-3" /></a>
+            <a href="{% url 'profile' %}"><img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-6 w-6 ml-3" /></a>
           </div>
         </div>
 
@@ -101,7 +103,7 @@
   </header>
 {% endblock %}
 {% block main %}
-  <div class="container">
+  <div class="container-pr">
     <div class="flex justify-between gap-1">
       <div class="md:hidden h-fit w-80 bg-white pb-20">
         <div class="text-center text-slate-500 px-3">
@@ -152,8 +154,8 @@
       </div>
       <div class="bg-white w-full">
         <h1 class="text-center mt-4 mb-4 text-xl text-gray-500">{% block header_main %}{% endblock header_main %}</h1>
-        <div class="border-t border-gray-300 mb-6"></div>
-        <div>
+        <div class="border-t border-gray-300 mb-5"></div>
+        <div class="px-3 pb-10">
           {% block content %}
 
           {% endblock %}
@@ -161,6 +163,8 @@
       </div>    
     </div>
   </div>
+
+
 {% endblock %}
 {% block main_script %}
   <script src="{% static 'lk/js/main.js' %}"></script>

@@ -10,6 +10,8 @@ urlpatterns = [
     path('create-order/<slug:tarif>/', view=views.create_order, name='create-order'),
     path('new-order/', view=views.new_order, name='new-order'),
     path('services/', view=views.services, name='services'),
+    path('oferta/', view=views.oferta, name='oferta'),
+    path('policy/', view=views.policy, name='policy'),
     path('services/<slug:social>/<slug:category>/', view=views.services_filter, name='filter-services'),
     path('categories/<slug:category_slug>/', view=views.categories),
     path('order-confirmation/<int:order_id>', view=views.order_confirmation, name='order-confirmation'),
