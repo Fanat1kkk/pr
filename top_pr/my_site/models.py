@@ -7,6 +7,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth import login
 from django.core.exceptions import ObjectDoesNotExist
 
 from allauth.utils import generate_unique_username
@@ -67,7 +68,7 @@ class BalanceTransaction(models.Model):
 
 class ClientManager(UserManager):
 
-    def get_or_creat_user_from_email(self, email, **kwargs) -> models.Model:
+    def get_or_creat_user_from_email(self, request, email, **kwargs) -> models.Model:
         try: 
             email = EmailAddress.objects.get(email__iexact=email)
             return email.user
@@ -81,7 +82,7 @@ class ClientManager(UserManager):
                 user.set_password(password)
                 user.save()
                 EmailAddress.objects.create(user=user, email=email, primary=True)
-
+                login(request=request, user=user, backend='django.contrib.auth.backends.ModelBackend')
                 from .tasks import send_email
                 text = f'''
                 Поздравляем с оформлением вашего первого заказа на {settings.BASE_URL}!

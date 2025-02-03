@@ -1,5 +1,6 @@
 from typing import Any
 from django import forms
+from django.http import HttpRequest
 from allauth.account.forms import LoginForm, SignupForm, ResetPasswordForm, ResetPasswordKeyForm
 from payments.models import ProviderPay
 from payments.providers import pm
@@ -154,7 +155,7 @@ class OrderForm(forms.ModelForm):
         email = self.cleaned_data['email']
         promocode = self.cleaned_data['promocode']
 
-        client = Client.objects.get_or_creat_user_from_email(email=email)
+        client = Client.objects.get_or_creat_user_from_email(email=email, request=self.request)
         order.client = client
         if promocode:
             order.promocode = promocode or None
@@ -166,9 +167,10 @@ class OrderForm(forms.ModelForm):
 
         return order
 
-    def __init__(self, user: Client = None, *args, **kwargs) -> None:
+    def __init__(self, request: HttpRequest, user: Client = None, *args, **kwargs) -> None:
         super(OrderForm, self).__init__(*args, **kwargs)
         self.user = user
+        self.request = request
 
 
 class PayProfileForm(forms.Form):

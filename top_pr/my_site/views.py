@@ -5,6 +5,8 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse, Http404, HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import login
 from django.db.models import Prefetch
 
 from allauth.account.views import LoginView, SignupView, PasswordResetFromKeyView
@@ -270,10 +272,9 @@ def AJAX_checked_pay(request):
 
 
 @csrf_exempt
-def new_order(request):
+def new_order(request: HttpRequest):
     if request.POST:
-        print(request.POST)
-        form = OrderForm(user = request.user, data=request.POST)
+        form = OrderForm(user = request.user, request=request, data=request.POST)
         if form.is_valid():
             order: Order = form.save()
             return JsonResponse({'success': True, 'order_id': order.order_id})
@@ -283,6 +284,7 @@ def new_order(request):
     return JsonResponse({'success': False, 'error_message': 'Неверный запрос'})
 
 
+@login_required(login_url='account_login')
 def order_confirmation(request, order_id):
     try:
         order = Order.objects.get(order_id=order_id, client=request.user)
