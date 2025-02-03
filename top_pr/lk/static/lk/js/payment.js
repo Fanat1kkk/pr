@@ -51,7 +51,7 @@ async function pay() {
 
     try {
         // Отправляем POST-запрос
-        let response = await fetch("http://127.0.0.1:8000/profile/pay-balance/", {
+        let response = await fetch("/profile/pay-balance/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Функция для загрузки данных
     async function loadPage(page) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/profile/history-pay/${page}`);
+            const response = await fetch(`/profile/history-pay/${page}`);
             const data = await response.json();
 
             if (data.ok) {

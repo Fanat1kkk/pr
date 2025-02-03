@@ -58,7 +58,7 @@ class Provider:
 
 class LikeHub(Provider):
     url = 'https://api-resale.likehub.io/v1/just'
-    key = 'fc911f95796f06eb347e4af887c7a48eac9aaafa25b4cba022266ed227c3dc0e'
+    key = 'fd715ea3711e9efda22e4895cc35eb631475d974003259a7d4d20027d7dbecc4'
     name = 'likehub'
 
     def balance(self) -> int:

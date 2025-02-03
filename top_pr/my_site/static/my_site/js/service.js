@@ -1,6 +1,6 @@
 // Функция для отправки запроса и обновления опций в "Услуге"
 function fetchAndUpdateServices(slug) {
-    fetch(`http://127.0.0.1:8000/categories/${slug}/`)
+    fetch(`/categories/${slug}/`)
         .then(response => response.json())
         .then(data => {
             const serviceOptions = document.getElementById('serviceOptions');
@@ -47,7 +47,7 @@ function fetchAndUpdateServices(slug) {
 
 // Функция для отправки запроса с выбранной социальной сетью и услугой
 function fetchTariffs(social, service) {
-    fetch(`http://127.0.0.1:8000/services/${social}/${service}/`)
+    fetch(`/services/${social}/${service}/`)
         .then(response => response.json())
         .then(data => {
             updateTariffCards(data); // Обновляем карточки тарифов

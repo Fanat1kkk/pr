@@ -75,7 +75,9 @@ class MyPasswordResetFromKeyDoneView(FormsMixin, TemplateView):
     template_name = "my_site/account/password_reset_from_key_done.html"
 
 
-def index(request):
+def index(request: HttpRequest):
+    if request.user.is_authenticated:
+        return redirect('profile')
     categories = Category.objects.all()
     sub_cats = []
     tariffs = []

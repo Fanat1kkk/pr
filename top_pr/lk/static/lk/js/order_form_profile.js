@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Функция для получения данных с API
     // function fetchServices(socialNetworkSlug) {
-    //     fetch(`http://127.0.0.1:8000/cat/${socialNetworkSlug}/`)
+    //     fetch(`/cat/${socialNetworkSlug}/`)
     //         .then(response => response.json())
     //         .then(data => {
     //             updateServices(data);
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchServices(socialNetworkSlug) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/cat/${socialNetworkSlug}/`);
+            const response = await fetch(`/cat/${socialNetworkSlug}/`);
             const data = await response.json();
             return data;
         } catch (error) {
@@ -89,7 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchTariffs(social, service) {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/cat/${social}/sub/${service}`);
+            const response = await fetch(`/cat/${social}/sub/${service}`);
             const data = await response.json();
             return data;
         } catch (error) {
