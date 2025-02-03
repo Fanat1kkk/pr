@@ -1,2 +1,0 @@
-class NotMoneyBalanceExteption(Exception):
-    pass

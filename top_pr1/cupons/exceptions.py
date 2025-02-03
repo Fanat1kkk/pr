@@ -1,2 +1,0 @@
-class CuponException(Exception):
-    pass

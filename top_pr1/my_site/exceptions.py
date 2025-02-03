@@ -1,2 +1,0 @@
-class BalanceException(Exception):
-    pass

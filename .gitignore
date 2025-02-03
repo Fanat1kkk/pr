@@ -1,7 +1,8 @@
 env
 .vscode
 top_pr1
-node_modules
+top_pr/static
+top_pr/node_modules
 top_pr/test.py
 top_pr/test_redis.py
 top_pr/db.sqlite3
@@ -11,12 +12,11 @@ top_pr/start_gunicorn.sh
 top_pr/test.html
 top_pr/start_gunicorn.sh
 top_pr/.env
-package-lock.json
-package.json
-tailwind.config.js
-debug.log
+top_pr/package-lock.json
+top_pr/package.json
+top_pr/tailwind.config.js
+top_pr/debug.log
 dump.rdb
-.req.txt
 # Игнорировать все папки __pycache__ и их содержимое
 **/__pycache__/
 **/*.py[cod]
