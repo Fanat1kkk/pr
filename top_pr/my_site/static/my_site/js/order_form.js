@@ -66,16 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (checkIcon) checkIcon.classList.remove('rotate-180');
     }
 
-    // Функция для получения данных с API
-    // function fetchServices(socialNetworkSlug) {
-    //     fetch(`http://127.0.0.1:8000/cat/${socialNetworkSlug}/`)
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             updateServices(data);
-    //             updateServiceSelectOption(data)
-    //         })
-    //         .catch(error => console.error('Ошибка при получении данных:', error));
-    // }
 
     async function fetchServices(socialNetworkSlug) {
         try {
@@ -112,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let tariffOptions = document.getElementById('tariffOptions');
 
         let span = document.createElement('span');
-        span.innerText = tariff.name + ' (' + tariff.price + ' руб./шт)';
+        span.innerText = tariff.name + ' (' + tariff.price.toFixed(2) + ' руб./шт)';
 
         // Создаем tariffOption и добавляем атрибуты
         let tariffOption = document.createElement('div');
@@ -137,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let numberInput = document.getElementById('numberInput');
         let link = document.getElementById('link_p');
 
-        infoText.innerHTML = `${data.name} (${data.price}руб./шт)`;
+        infoText.innerHTML = `${data.name} (${data.price.toFixed(2)}руб./шт)`;
         link.placeholder = data.link_p;
         infoText.setAttribute('data-id', data.service_id);
         infoText.setAttribute('data-price', data.price);

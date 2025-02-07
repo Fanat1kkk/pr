@@ -30,7 +30,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8fr+g2#o^1&09fvdh&^zh58brlm_#yt$%hd=)y)()-+4ycdr2s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = True #config('DEBUG', default=False, cast=bool)
 
 if DEBUG:
     ALLOWED_HOSTS = ['*', '127.0.0.1', 'top-pr.ru', 'www.top-pr.ru']
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django.contrib.sitemaps',
 
     'allauth',
     'allauth.account',
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'payments.apps.PaymentsConfig',
     'cupons.apps.CuponsConfig',
     'lk.apps.LkConfig',
+    'sitemap_gen',
 ]
 
 MIDDLEWARE = [

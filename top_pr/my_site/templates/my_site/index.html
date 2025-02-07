@@ -1,4 +1,7 @@
-{% extends 'my_site/base.html' %} {% load static %} {% block main %}
+{% extends 'my_site/base.html' %} 
+{% load static %} 
+{% load custom_filters %}
+{% block main %}
   <!-- ШАПКА САЙТА -->
   <section class="container mb-20">
     <h1 class="text-center text-6xl md:text-5xl sm:text-4xl xs:text-2xl leading-relaxed md:leading-relaxed sm:leading-normal xs:leading-[2em] text-[#282c4b]">
@@ -34,7 +37,7 @@
             <!-- Социальная сеть -->
             <div class="mb-6">
               <label for="socialNetwork" class="block text-sm font-semibold text-black mb-[14px]">Социальная сеть</label>
-              <div class="relative mt-1">
+              <div class="relative z-0 mt-1">
                 <div class="relative border border-gray-300 rounded-md cursor-pointer" id="socialNetwork">
                   <div class="flex items-center justify-between px-5 py-3">
                     <div class="flex items-center gap-5">
@@ -91,7 +94,7 @@
                   <div class="flex items-center justify-between px-5 py-3">
                     <div class="flex items-center gap-5">
                       <span id="infoText" data-value="{{ tariffs.0.service_id }}" data-price="{{ tariffs.0.price_per_one }}" data-minCount="{{ tariffs.0.min_count }}" data-maxCount="{{ tariffs.0.max_count }}" class="text-gray-600 hover:text-gray-900 text-lg xs:text-xs">
-                        {{ tariffs.0.name }} ({{ tariffs.0.price_per_one }}
+                        {{ tariffs.0.name }} ({{ tariffs.0.price_per_one | format_decimal }}
                         руб./шт)
                       </span>
                     </div>
@@ -103,7 +106,7 @@
                     {% for tariff in tariffs %}
                       <div class="flex items-center p-2 cursor-pointer hover:bg-gray-100" option data-value="{{ tariff.service_id }}" data-price="{{ tariff.price_per_one }}" data-minCount="{{ tariff.min_count }}" data-maxCount="{{ tariff.max_count }}" data-desc="{{ tariff.text_info }}">
                         <span>
-                          {{ tariff.name }} ({{ tariff.price_per_one }}
+                          {{ tariff.name }} ({{ tariff.price_per_one | format_decimal}}
                           руб./шт)
                         </span>
                       </div>
@@ -140,7 +143,7 @@
                 <label for="numberInput" class="block text-sm font-semibold text-black mb-[14px]">Количество</label>
                 <div class="flex items-center">
                   <button id="decrease" class="text-xl text-gray-700 px-4 xs:px-3 py-3 xs:py-2 border border-gray-300 rounded-l-md">-</button>
-                  <input id="numberInput" type="text" value="{{ tariffs.0.min_count }}" class="text-xl w-24 text-center text-gray-600 px-3 py-3 border-t border-b border-gray-300 focus:ring-0 focus:outline-none" pattern="\d*" inputmode="numeric" />
+                  <input id="numberInput" type="text" value="{{ tariffs.0.min_count }}" class="text-xl w-24 text-center text-gray-600 px-3 py-3 xs:py-2 border-t border-b border-gray-300 focus:ring-0 focus:outline-none" pattern="\d*" inputmode="numeric" />
                   <button id="increase" class="text-xl text-gray-700 px-4 xs:px-3 py-3 xs:py-2 border border-gray-300 rounded-r-md">+</button>
                 </div>
                 <div class="flex items-center gap-3 mt-2">
@@ -183,7 +186,7 @@
   </section>
 
   <!-- Для экранов больше 479.99px -->
-  <section class="sm:hidden bg-white pb-10 pt-20">
+  <section class="sm:hidden bg-white pb-20 pt-20">
     <div class="container flex flex-col items-start gap-36">
       <div class="flex gap-10">
         <div class="flex">
@@ -235,7 +238,7 @@
   </section>
 
   <!-- Для экранов меньше 479.99px -->
-  <section class="hidden sm:block bg-white pb-10 pt-20">
+  <section class="hidden sm:block bg-white pb-14 pt-20">
     <div class="container flex flex-col items-center gap-24">
       <div class="flex gap-10 justify-betweenW">
         <div class="flex gap-1">
@@ -287,6 +290,7 @@
       </div>
     </div>
   </section>
+
 {% endblock %}
 
 {% block script_js %}

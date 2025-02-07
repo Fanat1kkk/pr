@@ -2,6 +2,7 @@
 module.exports = {
   content: ["./my_site/**/*.{html,js}",
     "./lk/**/*.{html,js}",
+    "./templates/**/*.{html,js}",
   ],
   theme: {
 

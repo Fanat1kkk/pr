@@ -3,13 +3,14 @@ from decimal import Decimal
 from django.shortcuts import render, redirect
 from django.conf import settings 
 from django.http import HttpResponse, JsonResponse, Http404, HttpRequest
+from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.base import TemplateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.db.models import Prefetch
 
-from allauth.account.views import LoginView, SignupView, PasswordResetFromKeyView
+from allauth.account.views import LoginView, SignupView, PasswordResetFromKeyView, PasswordResetView, PasswordResetDoneView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
@@ -17,7 +18,7 @@ from payments.models import ProviderPay
 from payments.providers import pm
 
 from .models import Category, Order, Service, Subcategory, PromoCode
-from .forms import OrderForm, MyLogInForm, MySignupForm, PayProfileForm, MyResetPasswordKeyForm, CommentForm
+from .forms import OrderForm, MyLogInForm, MySignupForm, PayProfileForm, MyResetPasswordForm, MyResetPasswordKeyForm, CommentForm
 from .serializers import PromoCodeSerializer, ServiceSerializer, SubcategorySerializer, SubcategorySlugSerializer, ServiceInfoSerializer
 from .exceptions import BalanceException
 from .tasks import cancel_order, send_email_register_user
@@ -32,24 +33,17 @@ class FormsMixin():
         context = super().get_context_data(**kwargs)
         form_login = MyLogInForm()
         form_signup = MySignupForm()
+        form_reset_pass = MyResetPasswordForm()
+        from_reset_pass_key = MyResetPasswordKeyForm()
+        form_reset_pass_done = MyPasswordResetDoneView()
         context.update({
             'form_login': form_login,
             'form_signup': form_signup,
+            'form_reset_pass': form_reset_pass,
+            'form_reset_pass_done': form_reset_pass_done,
+            'form_reset_pass_key': from_reset_pass_key,
         })
         return context
-
-
-class AjaxLoginView(LoginView):
-    def post(self, request, *args, **kwargs):
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        if form.is_valid():
-            response = self.form_valid(form)
-            return JsonResponse({'location': response.url})
-        else:
-            form.errors
-            return JsonResponse({'errors': form.errors, 'errors_non_fields': form.non_field_errors()})
-
 
 class AjaxSignupView(SignupView):
     def post(self, request, *args, **kwargs):
@@ -63,18 +57,30 @@ class AjaxSignupView(SignupView):
         else:
             return JsonResponse({'errors': form.errors, 'errors_non_fields': form.non_field_errors()})
 
-    
-class PasswordResetDoneView(FormsMixin, TemplateView):
-    template_name = "my_site/account/password_reset_done.html"
+class MyPasswordResetView(FormsMixin, PasswordResetView):
+    template_name = "my_site/account/password_reset.html"
+    success_url = reverse_lazy("reset_password_done")
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        print('MyPasswordResetView')
 
+class MyPasswordResetDoneView(FormsMixin, TemplateView):
+    template_name = "my_site/account/password_reset_done.html"
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        print('MyPasswordResetDoneView')
 
 class MyPasswordResetFromKeyView(FormsMixin, PasswordResetFromKeyView):
-    template_name: str = "my_site/account/password_reset_from_key.html"
+    template_name: str = "account/password_reset_from_key.html"
     form_class = MyResetPasswordKeyForm
-
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
 class MyPasswordResetFromKeyDoneView(FormsMixin, TemplateView):
     template_name = "my_site/account/password_reset_from_key_done.html"
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        print('MyPasswordResetFromKeyDoneView')
 
 
 def index(request: HttpRequest):
@@ -435,8 +441,49 @@ def add_comment(request, order_id: int):
     return redirect('orders')
     
 
+def social(request, social: str):
+    print('social')
+    try:
+        social = Category.objects.get(slug=social)
+        services = Service.objects.filter(is_published=True, category=social)
+
+        return render(request=request, template_name='my_site/service_cat.html', context={'services': services, 'social': social})
+
+    except Category.DoesNotExist:
+        return redirect('services')
+
+
+def service_tariff(request, social: str, tariff: str):
+    try:
+        social = Category.objects.get(slug=social)
+        tariff = Service.objects.get(is_published=True, slug=tariff, category=social)
+
+        return render(request=request, template_name='my_site/service_tariff.html', context={'service': tariff})
+
+    except (Category.DoesNotExist, Service.DoesNotExist):
+        return redirect('services')
+
+
 def oferta(request: HttpRequest):
     return render(request=request, template_name='my_site/oferta.html')
 
 def policy(request: HttpRequest):
     return render(request=request, template_name='my_site/policy.html')
+
+def contacts(request: HttpRequest):
+    return render(request=request, template_name='my_site/contacts.html')
+
+def robots(request: HttpRequest):
+    content = """User-agent: *
+Allow: /
+
+Disallow: /accounts/*
+Disallow: /reviews*
+Disallow: /policy/
+Disallow: /oferta/
+Disallow: /comment/*
+
+Sitemap: https://top-pr.ru/sitemap.xml
+"""
+    return HttpResponse(content, content_type="text/plain")
+

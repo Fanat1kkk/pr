@@ -1,6 +1,6 @@
 {% extends 'lk/base_profile.html' %}
 {% load static %}
-{% comment %} {% load custom_filters %} {% endcomment %}
+{% load custom_filters %}
 
 {% block title %}
   Новый заказ
@@ -76,7 +76,7 @@
                     <div class="flex items-center justify-between px-5 py-3">
                       <div class="flex items-center gap-5">
                         <span id="infoText" data-value="{{ tariffs.0.service_id }}" data-price="{{ tariffs.0.price_per_one }}" data-minCount="{{ tariffs.0.min_count }}" data-maxCount="{{ tariffs.0.max_count }}" class="text-gray-600 hover:text-gray-900 text-lg xs:text-xs">
-                          {{ tariffs.0.name }} ({{ tariffs.0.price_per_one }}
+                          {{ tariffs.0.name }} ({{ tariffs.0.price_per_one | format_decimal}}
                           руб./шт)
                         </span>
                       </div>
@@ -88,7 +88,7 @@
                       {% for tariff in tariffs %}
                         <div class="flex items-center p-2 cursor-pointer hover:bg-gray-100" option data-value="{{ tariff.service_id }}" data-price="{{ tariff.price_per_one }}" data-minCount="{{ tariff.min_count }}" data-maxCount="{{ tariff.max_count }}" data-desc="{{ tariff.text_info }}">
                           <span>
-                            {{ tariff.name }} ({{ tariff.price_per_one }}
+                            {{ tariff.name }} ({{ tariff.price_per_one | format_decimal}}
                             руб./шт)
                           </span>
                         </div>

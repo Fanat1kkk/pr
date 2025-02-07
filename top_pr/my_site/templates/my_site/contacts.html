@@ -1,0 +1,38 @@
+{% extends "my_site/base.html" %}
+{% load static %}
+
+{% block title %} Контакты {% endblock %}
+{% block contacts %}
+<div class="container bg-gray-100 text-gray-900">
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-lg p-6">
+            <h1 class="text-3xl font-bold text-center mb-6">Контакты</h1>
+            
+            <p class="text-lg text-center mb-4">
+                Время работы технической поддержки: <br>
+                <strong>10:00 - 20:00</strong>
+            </p>
+
+            <p class="text-lg text-center mb-6">
+                Напишите нам, если нужна помощь.
+            </p>
+
+            <div class="flex flex-col items-center space-y-4">
+                <a href="https://t.me/fanat1k" class="flex items-center space-x-3 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    <img src="{% static 'my_site/img/telegram.svg' %}" alt="Telegram" class="w-6 h-6">
+                    <span class="text-lg">@fanat1k</span>
+                </a>
+
+                <a href="mailto:top-pr@mail.ru" class="flex items-center space-x-3 bg-gray-800 text-white px-4 py-2 rounded-lg hover:bg-gray-900 transition">
+                    <img src="{% static 'my_site/img/mail.svg' %}" alt="Email" class="w-6 h-6">
+                    <span class="text-lg">top-pr@mail.ru</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock contacts %}
+
+{% block script_js %}
+<script src="{% static 'my_site/js/service.js' %}"></script>
+{% endblock script_js %}

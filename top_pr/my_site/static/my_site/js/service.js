@@ -71,7 +71,7 @@ function updateTariffCards(tariffs) {
                 <img src="/static/my_site/img/${service.category.icon}" alt="${service.category.cat_name}" class="w-10 h-10 mb-4">
                 <h3 class="text-lg font-semibold text-gray-800 mb-2">${service.category.cat_name} ${service.category.sub_cat_name}</h3>
                 <h3 class="text-lg font-semibold text-gray-800 mb-2">${service.name}</h3>
-                <p class="text-gray-500 mb-4">Цена за 1000 шт: ${service.price} ₽</p>
+                <p class="text-gray-500 mb-4">Цена за 1000 шт: ${Math.round(service.price)} ₽</p>
                 <p class="text-sm text-center text-gray-600 mb-6">${service.text_pre_info}</p>
                 <div class="flex gap-4">
                     <button onclick="window.open('/create-order/${service.slug}/', '_blank')" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition duration-300">Заказать</button>

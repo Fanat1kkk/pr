@@ -6,6 +6,7 @@ from decimal import Decimal, ROUND_HALF_UP
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
+from django.urls import reverse
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth import login
 from django.core.exceptions import ObjectDoesNotExist
@@ -241,6 +242,9 @@ class Service(models.Model):
     def __str__(self) -> str:
         return f'{self.name} {self.category}'
     
+    def get_absolute_url(self):
+        return reverse('service_tariff', kwargs={'social': self.category.slug, 'tariff': self.slug})
+
     class Meta:
         verbose_name = 'Услуга'
         verbose_name_plural = 'Услуги'

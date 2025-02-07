@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /accounts/*
+Disallow: /reviews*
+Disallow: /policy/
+Disallow: /oferta/
+Disallow: /comment/*
+
+Sitemap: https://top-pr.ru/sitemap.xml

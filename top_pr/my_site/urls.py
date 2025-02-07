@@ -1,8 +1,10 @@
 from django.urls import path, re_path
+from django.views.generic import TemplateView
 from . import views
 
 urlpatterns = [
     path('', view=views.index, name='index'),
+    re_path(r'^robots\.txt$', view=views.robots,),
     path('cat/<slug:cat_slug>/sub/<slug:sub_slug>/', view=views.get_tariffs),
     path('cat/<slug:category_slug>/', view=views.subcategories_with_services),
     path('promocode/<str:promocode>/', view=views.get_promocode),
@@ -25,11 +27,7 @@ urlpatterns = [
     path('orders/search', view=views.search_orders, name='orders_search'),
     path('orders/sorting', view=views.sort_orders, name='orders_sirt'),
     path('order-cancel/', view=views.AJAX_order_cancel, name='order_cancel'),
-    # path('search/', view=views.search_orders, name='search'),
-    path('login/', view=views.AjaxLoginView.as_view(), name='my_login'),
-    path('signup/', view=views.AjaxSignupView.as_view(), name='my_signup'),
-    # path('password/reset/', view=views.MyPasswordResetView.as_view(), name='account_reset_password'),
-    path('password/reset/done/', view=views.PasswordResetDoneView.as_view(), name='account_reset_password_done'),
-    re_path(r"^password/reset/key/(?P<uidb36>[0-9A-Za-z]+)-(?P<key>.+)/$", views.MyPasswordResetFromKeyView.as_view(), name="account_reset_password_from_key"),
-    path("password/reset/key/done/", view=views.MyPasswordResetFromKeyDoneView.as_view(), name="account_reset_password_from_key_done"),
+    path('contacts/', view=views.contacts, name='contacts'),
+    path('<slug:social>/<slug:tariff>/', view=views.service_tariff, name='service_tariff'),
+    path('<slug:social>/', view=views.social, name='social'),
 ]
