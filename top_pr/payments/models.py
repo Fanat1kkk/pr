@@ -34,21 +34,17 @@ class ProviderPay():
         (YOOM, 'iomoney.svg'),
         (PRF, 'wallet.svg')
     ]
+ 
                 
 class TransactionManager(models.Manager):
-    
-    # def create(self, **kwargs):
-    #     '''
-    #     При создании ещё одной транзакции для данного заказа, всем остальным назначается is_active=False
-    #     Тем самым обеспечивает всегда 1 активную трназакцию для заказа
-    #     '''
-    #     trn = super().create(**kwargs)
-    #     for t in self.filter(order=trn.order, is_active=True):
-    #         if t.pk != trn.pk:
-    #             t.is_active = False
-    #             t.save()
-    #     return trn
-    
+
+    def create(self, **kwargs):
+        trn: Transaction = self.model(**kwargs)
+        self.filter(order=trn.order).delete()
+        trn.save()
+        return trn
+
+
     def profile_payments(self, **kwargs):
         '''
         Возвращает все транзакции созданые при пополнения баланса аккаунта

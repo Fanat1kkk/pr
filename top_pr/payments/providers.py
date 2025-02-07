@@ -197,7 +197,6 @@ class PayProfileProvider(PayBaseProvider):
         return f'{self.url}profile/'
 
 
-
 class PayManager:
 
     def create_pay(self,pay_provider: str,  order: Order = None) -> str:

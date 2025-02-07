@@ -312,6 +312,7 @@ def order_pay(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
+            print('data: ', data)
         except json.JSONDecodeError:
             return JsonResponse({'error': "Server error"}, status=400)
         form = PayProfileForm(data=data)
