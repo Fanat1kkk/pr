@@ -36,6 +36,8 @@
   </div>
 </div>
 
+{% if order.status == 'NOPAY' %}
+<!-- Способы оплаты -->
 <div class="max-w-md mt-5">
   <h3 class="text-gray-600">Способ пополнения</h3>
   {% for provider in pay_p %}
@@ -56,5 +58,6 @@
       data-price="{{ order.get_price|format_decimal }}" data-orderid="{{order.order_id}}">Оплатить</button>
   </div>
 </div>
+{% endif %}
 <script src="{% static 'lk/js/pay_order.js' %}"></script>
 {% endblock %}

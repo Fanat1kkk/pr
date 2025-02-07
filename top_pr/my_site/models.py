@@ -434,6 +434,9 @@ class Order(ABSOrderTask):
             'email': self.email
         }
 
+    def get_absolute_url(self):
+        return reverse('order-confirm-profile', kwargs={'order_id': self.order_id})
+
     @property
     def transaction(self):
         '''

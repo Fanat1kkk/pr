@@ -76,12 +76,14 @@
                 <td class="px-4 py-4 whitespace-nowrap text-sm font-medium" id="btn-{{ order.order_id }}">
                   {% if order.status == 'COMPL' or order.status == 'PART' and not order.review %}
                     <button class="ml-2 text-green-600 hover:text-green-900">ОЦЕНИТЬ</button>
-                  {% elif order.status == 'INWOR' %}
-                    {% if order.service.is_cancellation %}
-                      <button onclick="cancelOrder(this)" data-orderid="{{ order.order_id }}" class="ml-2 text-green-600 hover:text-green-900">STOP</button>
-                    {% else %}
-                      <p>Нельзя отменить</p>
-                    {% endif %}
+                    {% elif order.status == 'INWOR' %}
+                      {% if order.service.is_cancellation %}
+                        <button onclick="cancelOrder(this)" data-orderid="{{ order.order_id }}" class="ml-2 text-green-600 hover:text-green-900">STOP</button>
+                      {% else %}
+                        <p>Нельзя отменить</p>
+                      {% endif %}
+                    {% elif order.status == 'NOPAY' %}
+                    <a href="{{order.get_absolute_url }}" class="ml-2 font-bold text-green-600 hover:text-green-900">ОПЛАТИТЬ</a>
                   {% else %}
                     <p>Нет действий</p>
                   {% endif %}
