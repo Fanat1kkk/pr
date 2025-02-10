@@ -4,6 +4,8 @@
 {% block create_order %}
   <!-- Первый блок -->
   <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
+  <div class="container">
+    <h1 class="text-start text-2xl font-bold text-gray-500 mb-6">{{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }}</h1>
     <div class="flex items-center justify-center">
       <div class="flex sm:flex-col max-w-4xl gap-10 sm:gap-0">
         <h1>dsfgdfgdfg{{ service.category.cat_name }} {{ service.sub_cat.name }} {{ service.name }}</h1>
@@ -75,7 +77,7 @@
 
     <!-- Скрытые элементы для передачи значений -->
     <div id="serviceData" style="display: none;" data-serviceid="{{ service.service_id }}" data-min-count="{{ service.min_count }}" data-max-count="{{ service.max_count }}" data-price="{{ service.price_per_one }}" data-promo="0"></div>
-
+  </div>
 {% endblock %}
 
 {% block script_js %}
