@@ -5,9 +5,14 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block canonical %}
+    <link rel="canonical" href="https://top-pr.ru/">
+    {% endblock %}
+    <meta name="description" content="Увеличьте лайки, подписчиков и просмотры в Instagram, TikTok и других соцсетях быстро и выгодно. Попробуйте Top-PR прямо сейчас.">
     <link rel="shortcut icon" href="{% static 'my_site/img/favicon.ico' %}" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'my_site/css/output.css' %}" />
+    
     <title>
       {% block title %}
         Расскрутка соц. сетей
@@ -34,7 +39,7 @@
                 <li>
                   <a href="{% url 'services' %}" class="hover:text-blue-600 transition-colors tracking-wide">Услуги</a>
                 </li>
-                <li>
+                <li class="hidden">
                   <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Отзывы</a>
                 </li>
               </ul>
@@ -58,7 +63,7 @@
                 <li>
                   <a href="{% url 'services' %}" class="hover:text-blue-600 transition-colors tracking-wide">Услуги</a>
                 </li>
-                <li>
+                <li class="hidden">
                   <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Отзывы</a>
                 </li>
               </ul>
@@ -72,30 +77,7 @@
                 {% endif %}
               </div>
             </div>
-            <!-- MOBILE MENU -->
-            <!-- <div class="nav-links duration-500 hidden absolute bg-white left-0 w-full sm:flex justify-between items-center px-5 top-[-100vh] transition-transform transform z-50"> 
-              <ul class="flex flex-col pb-5 mt-5 gap-5 items-start text-base text-slate-900 font-medium"> 
-                <li> 
-                  <a href="{% url 'index' %}" class="hover:text-blue-600 transition-colors tracking-wide">Главная</a> 
-                </li> 
-                <li> 
-                  <a href="{% url 'services' %}" class="hover:text-blue-600 transition-colors tracking-wide">Услуги</a> 
-                </li> 
-                <li> 
-                  <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Отзывы</a> 
-                </li> 
-              </ul> 
-
-              <div class="flex flex-col gap-4 items-center text-lg md:text-base"> 
-                {% if user.is_authenticated %} 
-                  <a href="{% url 'profile' %}" class="bg-blue-600 xs:text-xs px-7 md:px-6 py-3 rounded-3xl tracking-wide hover:bg-blue-500 hover:text-white transition-colors duration-500">Кабинет</a> 
-                  <a href="{% url 'account_logout' %}" class="bg-blue-300 px-7 md:px-6 py-3 rounded-3xl tracking-wide transition-all duration-500">Выйти</a> 
-                {% else %} 
-                  <a href="{% url 'account_login' %}" class="bg-teal-300 xs:text-xs px-7 md:px-6 py-3 rounded-3xl tracking-wide hover:bg-blue-500 hover:text-white transition-colors duration-500">Войти</a> 
-                  <a href="{% url 'account_signup' %}" class="bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 xs:text-xs px-7 md:px-6 py-3 rounded-3xl tracking-wide transition-all duration-500">Регистрация</a> 
-                {% endif %} 
-              </div> 
-            </div> -->
+            
             <!-- Бургер меню -->
             <button id="burger" class="hidden sm:block group relative h-5 w-[30px]">
               <span class="absolute top-0 left-1/2 h-[3px] w-full bg-black rounded-full transition-all duration-300 ease-in-out translate-x-[-50%] group-[.active]:translate-y-[8px] group-[.active]:rotate-45"></span>
@@ -234,8 +216,11 @@
               <div>
                 <h2 class="inline-block text-lg pb-4 mb-4 border-b-4 border-blue-600">ПРИНИМАЕМ К ОПЛАТЕ</h2>
               </div>
-              <a href="#" class="inline-flex items-center justify-center h-8 w-8 border border-gray-100 rounded-full mr-1 hover:text-blue-400 hover:border-blue-400"><img src="{% static 'my_site/img/cart.svg' %}" alt="cart" /></a>
-              <a href="#" class="inline-flex items-center justify-center h-8 w-8 border border-gray-100 rounded-full mr-1 hover:text-blue-400 hover:border-blue-400"><img src="{% static 'my_site/img/iomoney.svg' %}" alt="iomoney" /></a>
+              <img class="inline-flex items-center justify-center h-12 w-10 " src="{% static 'my_site/img/yoomoney.svg' %}" alt="yoomoney">
+              <img class="inline-flex items-center justify-center h-12 w-10 " src="{% static 'my_site/img/mir.svg' %}" alt="mir">
+              <img class="inline-flex items-center justify-center h-12 w-10 " src="{% static 'my_site/img/mastercard.svg' %}" alt="mastercard">
+              <div class="text-xs mt-4">Половенко А.Р. ИНН: 502498754363</div>
+              <div class="text-xs"><a href="mailto:top-pr@bk.ru">Email: top-pr@bk.ru</a></div>
             </div>
           </div>
         </div>

@@ -24,7 +24,7 @@
             <li>
               <a href="{% url 'services' %}" class="hover:text-blue-600 transition-colors tracking-wide">Услуги</a>
             </li>
-            <li>
+            <li class="hidden">
               <a href="#" class="hover:text-blue-600 transition-colors tracking-wide">Отзывы</a>
             </li>
           </ul>
@@ -119,7 +119,7 @@
                 <div class="text-sm text-slate-600 overline">Баланас</div>
               </div>
               <div>
-                <img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="h-10 w-10 cursor-pointer" />
+                <a href="{% url 'pay-balance' %}"><img src="{% static 'my_site/img/plus_p.svg' %}" alt="plus_p" class="hh-10 w-10 cursor-pointer" /></a>
               </div>
             </div>
             <a href="{% url 'new-order-profile' %}"><button id="submitButton" class="text-white cursor-pointer w-full mt-7 bg-gradient-to-r from-fuchsia-500 to-blue-500 hover:from-blue-500 hover:to-fuchsia-500 py-2 rounded-lg tracking-wide transition-all duration-500">Создать заказ</button></a>
