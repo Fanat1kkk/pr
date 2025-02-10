@@ -7,8 +7,7 @@
   <div class="container">
     <h1 class="text-start text-2xl font-bold text-gray-500 mb-6">{{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }}</h1>
     <div class="flex items-center justify-center">
-      <div class="flex sm:flex-col max-w-4xl gap-10 sm:gap-0">
-        <h1>dsfgdfgdfg{{ service.category.cat_name }} {{ service.sub_cat.name }} {{ service.name }}</h1>
+      <div class="flex sm:flex-col gap-10 sm:gap-0">
         <!-- Форма оформления заказа -->
         <div class="flex-col w-1/2 sm:w-full xs:min-w-[280px] p-4">
           {% csrf_token %}
