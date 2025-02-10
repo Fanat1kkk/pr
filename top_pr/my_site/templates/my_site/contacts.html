@@ -1,7 +1,16 @@
 {% extends "my_site/base.html" %}
 {% load static %}
 
-{% block title %} Контакты {% endblock %}
+{% block canonical %}
+<link rel="canonical" href="https://top-pr.ru/contacts/">
+{% endblock %}
+
+{% block title %} Контакты - Свяжитесь с нами | Top-PR {% endblock %}
+
+{% block desc %}
+<meta name="description" content="Свяжитесь с нами по любым вопросам: поддержка клиентов, сотрудничество и партнёрство. Email, Telegram и другие способы связи с Top-PR.">
+{% endblock %}
+
 {% block contacts %}
 <div class="container bg-gray-100 text-gray-900">
     <div class="container mx-auto px-4 py-12">

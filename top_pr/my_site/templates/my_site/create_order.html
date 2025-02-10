@@ -1,11 +1,23 @@
 {% extends 'my_site/base.html' %}
 {% load static %}
 
+{% block canonical %}
+<link rel="canonical" href="https://top-pr.ru/create-order/{{ service.slug }}/">
+{% endblock %}
+
+{% block desc %}
+<meta name="description" content="Оформление {{ service.sub_cat.name }} для {{ service.category.cat_name }} на Top-PR. {{ service.name }}.">
+{% endblock %}
+
+{% block title %}
+Оформление {{ service.sub_cat.name }} {{ service.name }} для {{ service.category.cat_name }} | Top-PR
+{% endblock %}
+
 {% block create_order %}
   <!-- Первый блок -->
   <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
   <div class="container">
-    <h1 class="text-start text-2xl font-bold text-gray-500 mb-6">{{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }}</h1>
+    <h1 class="text-start text-2xl font-bold text-gray-500 mb-6">Оформление {{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }}</h1>
     <div class="flex items-center justify-center">
       <div class="flex sm:flex-col gap-10 sm:gap-0">
         <!-- Форма оформления заказа -->

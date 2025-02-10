@@ -2,8 +2,15 @@
 {% load static %}
 {% load custom_filters %}
 
-{% block confirm_order %}
+{% block canonical %}
+<link rel="canonical" href="https://top-pr.ru/order-confirmation/">
+{% endblock %}
 
+{% block title %}
+Подтверждение заказа:{{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }}
+{% endblock %}
+
+{% block confirm_order %}
 <main class="bg-gray-100 xs:pt-8">
     <div class="container pt-24 pb-10">
         <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->

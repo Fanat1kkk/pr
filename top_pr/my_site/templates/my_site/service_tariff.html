@@ -1,6 +1,18 @@
 {% extends 'my_site/base.html' %}
 {% load static %}
 
+{% block canonical %}
+<link rel="canonical" href="https://top-pr.ru/{{ service.get_absolute_url }}">
+{% endblock %}
+
+{% block desc %}
+<meta name="description" content="Закажите {{ service.sub_cat.name }} для {{ service.category.cat_name }} на Top-PR. Быстрое и безопасное продвижение в {{ service.category.cat_name }}.">
+{% endblock %}
+
+{% block title %}
+{{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }} | Top-PR
+{% endblock %}
+
 {% block create_order %}
   <!-- Первый блок -->
   <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->

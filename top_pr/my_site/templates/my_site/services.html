@@ -1,6 +1,18 @@
 {% extends "my_site/base.html" %}
 {% load static %}
 
+{% block canonical %}
+<link rel="canonical" href="https://top-pr.ru/services/">
+{% endblock %}
+
+{% block desc %}
+<meta name="description" content="Выберите лучшие услуги для продвижения в Instagram, ВКонтакте, Telegram, TikTok и других соцсетях. Лайки, подписчики, просмотры – быстро и выгодно!">
+{% endblock %}
+
+{% block title %}
+Все услуги продвижения - лайки, подписчики, просмотры | Top-PR
+{% endblock %}
+
 {% block services %}
     <!-- Контейнер -->
     <div class="container pb-24">
