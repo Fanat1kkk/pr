@@ -2,7 +2,7 @@ from hashlib import sha1
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
-from .providers import PayFreeCassa, PayYoomoney
+from .providers import PayYoomoney, PayYookassa
 
 
 def pay(request):
@@ -17,15 +17,25 @@ def pay_yoommany(request):
     else:
         return Http404()
 
-
 @csrf_exempt
-def pay_freecassa(request):
+def pay_yookassa(request):
     if request.method == 'POST':
-        pay = PayFreeCassa()
+        pay = PayYookassa()
         pay.pay_status(request.POST)
         return HttpResponse('YES')
     else:
         return Http404()
+    
+#py-kassa-yo-yandex
+
+# @csrf_exempt
+# def pay_freecassa(request):
+#     if request.method == 'POST':
+#         pay = PayFreeCassa()
+#         pay.pay_status(request.POST)
+#         return HttpResponse('YES')
+#     else:
+#         return Http404()
 
     
     

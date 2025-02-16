@@ -1,9 +1,8 @@
-from django.urls import path, re_path
+from django.urls import path
 from . import views
 
 urlpatterns = [
-    # path('freecassa/', view=views.pay_freecassa),
-    path('yoomaney', view=views.pay_yoommany),
-    path('freecassa', view=views.pay_freecassa),
+    path('py-kassa-yo-yandex/', view=views.pay_yookassa),
+    path('yoomaney', view=views.pay_yoommany)
 
 ]

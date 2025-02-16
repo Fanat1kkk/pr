@@ -11,10 +11,11 @@
 {% endblock %}
 
 {% block confirm_order %}
-<main class="bg-gray-100 xs:pt-8">
-    <div class="container pt-24 pb-10">
+<main class="container">
+
+    <div class="pt-24 pb-10">
         <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
-        <div class="flex flex-col">
+        <div class="flex sm:flex-col w-full">
             <div class="flex sm:flex-col w-full max-w-4xl gap-10 sm:gap-0">
                 <!-- Форма оформления заказа -->
                 <div class="flex-1 text-lg text-gray-900 font-semibold">
@@ -45,6 +46,9 @@
                 </div>
             </div>
         </div>
+
+        {% if order.status == 'NOPAY' %}
+        <!-- Способы оплаты -->
         <div class="max-w-md mt-5">
             <h3 class="text-gray-600">Способ пополнения</h3>
             {% for provider in pay_p %}
@@ -56,12 +60,15 @@
                 <img id="payment-img" src="{% static 'my_site/img/check_p.svg' %}" alt="check_p" class="hidden h-8 w-8">
             </div>
             {% endfor %}
-            <button
-            class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500"
-            disabled>Оплатить</button>
+            <span id="method-error" class="text-red-700 mt-1"></span>
+            <div>
+                <button id="btn_pay" onclick="pay()" data-price="{{ order.get_price|format_decimal }}" data-orderid="{{order.order_id}}"
+                class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500">Оплатить</button>
+            </div>
         </div>
-
+        {% endif %}
     </div>
+
 </main>
 
 {% endblock confirm_order %}

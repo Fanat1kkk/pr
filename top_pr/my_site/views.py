@@ -10,12 +10,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.db.models import Prefetch
 
-from allauth.account.views import LoginView, SignupView, PasswordResetFromKeyView, PasswordResetView, PasswordResetDoneView
+from allauth.account.views import SignupView, PasswordResetFromKeyView, PasswordResetView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from payments.models import ProviderPay
-from payments.providers import pm
+from payments.providers import pm, pay_variant_profile
 
 from .models import Category, Order, Service, Subcategory, PromoCode
 from .forms import OrderForm, MyLogInForm, MySignupForm, PayProfileForm, MyResetPasswordForm, MyResetPasswordKeyForm, CommentForm
@@ -294,14 +294,14 @@ def new_order(request: HttpRequest):
 def order_confirmation(request, order_id):
     try:
         order = Order.objects.get(order_id=order_id, client=request.user)
-        pay_p = []
-        for provider, name in ProviderPay.PROVIDERS:
-            img = next((img for p, img in ProviderPay.IMG if p == provider), None)
-            pay_p.append({
-                'provider': provider,
-                'name': name,
-                'img': img
-            })
+        pay_p = pay_variant_profile()
+        # for provider, name in ProviderPay.PROVIDERS:
+        #     img = next((img for p, img in ProviderPay.IMG if p == provider), None)
+        #     pay_p.append({
+        #         'provider': provider,
+        #         'name': name,
+        #         'img': img
+        #     })
         return render(request=request, template_name='my_site/confirm_order.html', context={'order': order, 
                                                                                             'pay_p': pay_p})
     except Order.DoesNotExist:

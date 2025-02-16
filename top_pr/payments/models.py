@@ -20,18 +20,21 @@ def gen_unic_id():
 
 
 class ProviderPay():
-    FREC = 'FREC'
+    # FREC = 'FREC'
     YOOM = 'YOOM'
+    YOOK = 'YOOK'
     PRF = 'PRF'
 
     PROVIDERS = [
         # (FREC, 'FreeCassa'),
         (YOOM, 'Yoommany'),
+        (YOOK, 'Юкасса'),
         (PRF, 'Баланс'),
     ]
     
     IMG = [
         (YOOM, 'iomoney.svg'),
+        (YOOK, 'iomoney.svg'),
         (PRF, 'wallet.svg')
     ]
  
@@ -62,7 +65,8 @@ class Transaction(models.Model):
     ]
 
     client = models.ForeignKey(to=Client, verbose_name='Клиент', related_name='transactions', on_delete=models.CASCADE, null=True)
-    unic_id = models.IntegerField(verbose_name='ID транзакции', null=False, blank=False, unique=True, primary_key=True)
+    # unic_id = models.IntegerField(verbose_name='ID транзакции', null=False, blank=False, unique=True, primary_key=True)
+    unic_id = models.UUIDField(verbose_name='ID транзакции', null=False, blank=False, unique=True, primary_key=True)
     order = models.ForeignKey(to=Order, verbose_name='Заказ', related_name='transactions', on_delete=models.CASCADE, null=True)
     sum = models.DecimalField(verbose_name='Цена', max_digits=8, decimal_places=2)
     pay_provider = models.CharField(verbose_name='Вариант оплаты', max_length=4, choices=ProviderPay.PROVIDERS)

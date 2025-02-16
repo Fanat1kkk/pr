@@ -15,6 +15,8 @@ from pathlib import Path
 import os
 from decouple import config
 
+from yookassa import Configuration
+
 
 BASE_URL = config('BASE_URL')
 print(BASE_URL)
@@ -30,7 +32,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8fr+g2#o^1&09fvdh&^zh58brlm_#yt$%hd=)y)()-+4ycdr2s'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
 if DEBUG:
     ALLOWED_HOSTS = ['*', '127.0.0.1', 'top-pr.ru', 'www.top-pr.ru']
@@ -259,3 +261,13 @@ CKEDITOR_CONFIGS = {
 
 
 SHELL_PLUS = "ipython"
+
+
+# Юкасса
+
+if DEBUG:
+    Configuration.account_id = config('account_id')
+    Configuration.secret_key = config('secret_key')
+else:
+    Configuration.account_id = 1028863
+    Configuration.secret_key = 'test_KoJaPFqm8_8xHbXiQIW3R7TsnKFO2A2hNh1rbEYpU24'

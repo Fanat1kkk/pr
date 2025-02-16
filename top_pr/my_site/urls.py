@@ -4,7 +4,7 @@ from . import views
 
 urlpatterns = [
     path('', view=views.index, name='index'),
-    re_path(r'^robots\.txt$', view=views.robots,),
+    # re_path(r'^robots\.txt$', view=views.robots,),
     path('cat/<slug:cat_slug>/sub/<slug:sub_slug>/', view=views.get_tariffs),
     path('cat/<slug:category_slug>/', view=views.subcategories_with_services),
     path('promocode/<str:promocode>/', view=views.get_promocode),

@@ -84,24 +84,24 @@ class ClientManager(UserManager):
                 user.save()
                 EmailAddress.objects.create(user=user, email=email, primary=True)
                 login(request=request, user=user, backend='django.contrib.auth.backends.ModelBackend')
-                from .tasks import send_email
-                text = f'''
-                Поздравляем с оформлением вашего первого заказа на {settings.BASE_URL}!
+                # from .tasks import send_email
+                # text = f'''
+                # Поздравляем с оформлением вашего первого заказа на {settings.BASE_URL}!
                 
-                Мы создали для вас аккаунт для того чтоб вам было удобнее пользоваться нашим сервисом.
-                Так-же специально для вас мы подготовили промокод 10% на следующий заказ - reg10
+                # Мы создали для вас аккаунт для того чтоб вам было удобнее пользоваться нашим сервисом.
+                # Так-же специально для вас мы подготовили промокод 10% на следующий заказ - reg10
 
-                Ваш пароль: {password}
-                Ваш промокод: reg10
+                # Ваш пароль: {password}
+                # Ваш промокод: reg10
 
-                В случаи не выполнения заказа по какой либо из причин, средства будут начислены на ваш баланс.
+                # В случаи не выполнения заказа по какой либо из причин, средства будут начислены на ваш баланс.
 
-                Наши контакты:
-                Telegram - https://t.me/topprru
-                ВКонтакте - https://vk.com/topprru
-                '''
-                send_email.delay(f'Ваш пароль {settings.BASE_URL}', text, 
-                                  recipient_list=[email])
+                # Наши контакты:
+                # Telegram - https://t.me/topprru
+                # ВКонтакте - https://vk.com/topprru
+                # '''
+                # send_email.delay(f'Ваш пароль {settings.BASE_URL}', text, 
+                #                   recipient_list=[email])
                 
         return user
 

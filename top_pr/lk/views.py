@@ -12,7 +12,7 @@ from .forms import PasswordChangeForm, UserUpdateForm
 from my_site.models import *
 from my_site.forms import PayProfileForm
 from payments.models import ProviderPay
-from payments.providers import pm
+from payments.providers import pm, pay_variant, pay_variant_profile
 from my_site.tasks import cancel_order
 
 
@@ -45,14 +45,14 @@ def new_order_profile(request):
 def order_confirmation(request, order_id):
     try:
         order = Order.objects.get(order_id=order_id, client=request.user)
-        pay_p = []
-        for provider, name in ProviderPay.PROVIDERS:
-            img = next((img for p, img in ProviderPay.IMG if p == provider), None)
-            pay_p.append({
-                'provider': provider,
-                'name': name,
-                'img': img
-            })
+        pay_p = pay_variant_profile()
+        # for provider, name in ProviderPay.PROVIDERS:
+        #     img = next((img for p, img in ProviderPay.IMG if p == provider), None)
+        #     pay_p.append({
+        #         'provider': provider,
+        #         'name': name,
+        #         'img': img
+        #     })
         return render(request=request, template_name='lk/confirm_order_profile.html', context={'order': order, 
                                                                                             'pay_p': pay_p})
     except Order.DoesNotExist:
@@ -73,6 +73,8 @@ def pay_balance(request):
         if form.is_valid():
             sum = Decimal(str(form.cleaned_data.get('sum')))
             pay_provider = form.cleaned_data.get('pay_provider')
+            if pay_provider == 'PRF':
+                return JsonResponse({'error': 'Не верный способ оплаты'})
             redirect = pm.create_pay_profile(pay_provider=pay_provider, 
                                              client=request.user, 
                                              price=sum
@@ -88,15 +90,15 @@ def pay_balance(request):
 
     else:    
         form = PayProfileForm()
-        pay_p = []
-        for provider, name in ProviderPay.PROVIDERS:
-            if provider == 'PRF': break
-            img = next((img for p, img in ProviderPay.IMG if p == provider), None)
-            pay_p.append({
-                'provider': provider,
-                'name': name,
-                'img': img
-            })
+        pay_p = pay_variant()
+        # for provider, name in ProviderPay.PROVIDERS:
+        #     if provider == 'PRF': break
+            # img = next((img for p, img in ProviderPay.IMG if p == provider), None)
+            # pay_p.append({
+            #     'provider': provider,
+            #     'name': name,
+            #     'img': img
+            # })
         return render(request=request, template_name='lk/pay-balance.html', context={'pay_p': pay_p,
                                                                                      'form': form})
         
