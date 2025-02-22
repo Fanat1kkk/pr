@@ -20,8 +20,8 @@ sitemaps = {}
 
 urlpatterns = [
     path('tema57486/', admin.site.urls),
-    path('accounts/', include('allauth.urls')),
     path('pay/', include('payments.urls')),
+    path('accounts/', include('allauth.urls')),
     path('profile/', include('lk.urls')),
     path('', include('my_site.urls')),
     path('', include('sitemap_gen.urls')),

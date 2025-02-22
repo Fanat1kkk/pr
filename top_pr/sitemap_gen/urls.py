@@ -1,8 +1,10 @@
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path
-from .sitemaps import ServiceSitemap, StaticSitemap
+from .sitemaps import *
 
 sitemaps = {
+    'category': SocialsSitemap(),
+    'subcategories': SubcategoriesSitemap(),
     'services': ServiceSitemap(),
     'static': StaticSitemap(),
 }

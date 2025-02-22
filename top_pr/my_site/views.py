@@ -127,11 +127,12 @@ def categories(request, category_slug):
 
 @api_view(['GET'])
 def services_filter(request, social, category):
-    
     if social and category:
         tariffs = Service.objects.filter(category__slug=social, sub_cat__slug=category, is_published=True).prefetch_related(
             'category',
             Prefetch('category__sub_cat', queryset=Subcategory.objects.filter(slug=category)))
+        print('social: ', social)
+        print('tariffs: ', tariffs)
         serializer = ServiceInfoSerializer(tariffs, many=True)
         return Response(serializer.data)
     else: return Response([])
@@ -443,7 +444,6 @@ def add_comment(request, order_id: int):
     
 
 def social(request, social: str):
-    print('social')
     try:
         social = Category.objects.get(slug=social)
         services = Service.objects.filter(is_published=True, category=social)
@@ -451,18 +451,31 @@ def social(request, social: str):
         return render(request=request, template_name='my_site/service_cat.html', context={'services': services, 'social': social})
 
     except Category.DoesNotExist:
-        return redirect('services')
+        return render(request=request, template_name='404.html', status=404)
 
 
-def service_tariff(request, social: str, tariff: str):
+def service_tariff(request, social: str, category: str, tariff: str):
     try:
         social = Category.objects.get(slug=social)
+        sub_cat = Subcategory.objects.get(slug=category)
         tariff = Service.objects.get(is_published=True, slug=tariff, category=social)
 
         return render(request=request, template_name='my_site/service_tariff.html', context={'service': tariff})
 
-    except (Category.DoesNotExist, Service.DoesNotExist):
-        return redirect('services')
+    except (Category.DoesNotExist, Service.DoesNotExist, Subcategory.DoesNotExist):
+        return render(request=request, template_name='404.html', status=404)
+
+
+def social_cat(request, social, category):
+    if social and category:
+        tariffs = Service.objects.filter(category__slug=social, sub_cat__slug=category, is_published=True).prefetch_related(
+            'category',
+            Prefetch('category__sub_cat', queryset=Subcategory.objects.filter(slug=category)))
+        if len(tariffs) == 0:
+            return render(request=request, template_name='404.html', status=404)
+        social = Category.objects.get(slug=social)
+        return render(request=request, template_name='my_site/service_cat.html', context={'services': tariffs, 'social': social})
+    else: return render(request=request, template_name='404.html', status=404)
 
 
 def oferta(request: HttpRequest):

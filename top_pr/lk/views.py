@@ -102,6 +102,7 @@ def pay_balance(request):
         return render(request=request, template_name='lk/pay-balance.html', context={'pay_p': pay_p,
                                                                                      'form': form})
         
+        
 @login_required(login_url='account_login')
 def service_info(request, service_id):
     try:
@@ -131,6 +132,7 @@ def order_cancel(request: HttpRequest):
 
 @login_required(login_url='account_login')
 def settings(request):
+    print('first_name: ', request.user.first_name)
     if request.method == 'POST':
         # Обработка формы обновления имени и email
         if 'update_user' in request.POST:

@@ -35,7 +35,7 @@
           <div class="text-center text-slate-500 px-3">
             <div class="flex-col text-left">
               <img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-14 w-14 mx-auto mt-5 mb-4" />
-              <div class="mb-2">Имя: {{ user.username|default:'Noname' }}</div>
+              <div class="mb-2">Имя: {{ user.first_name|default:'Noname' }}</div>
               <div>Email: {{ user.email }}</div>
             </div>
             <div>
@@ -109,7 +109,7 @@
         <div class="text-center text-slate-500 px-3">
           <div class="flex flex-col justify-center">
             <img src="{% static 'my_site/img/profile_p.svg' %}" alt="profile_p" class="h-14 w-14 mx-auto mt-5 mb-3 cursor-pointer" />
-            <span class="mb-1">{{ user.username|default:'Noname' }}</span>
+            <span class="mb-1">{{ user.first_name|default:'Noname' }}</span>
             <span>{{ user.email }}</span>
           </div>
           <div>

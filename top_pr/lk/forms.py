@@ -14,7 +14,7 @@ class UserUpdateForm(forms.ModelForm):
     
     class Meta:
         model = Client
-        fields = ['username', 'email']
+        fields = ['first_name', 'email']
         
 
 class PasswordChangeForm(forms.Form):

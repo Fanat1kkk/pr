@@ -38,7 +38,6 @@ if DEBUG:
     ALLOWED_HOSTS = ['*', '127.0.0.1', 'top-pr.ru', 'www.top-pr.ru']
 else:
     ALLOWED_HOSTS = ['top-pr.ru', 'www.top-pr.ru']
-# CSRF_TRUSTED_ORIGINS = ['https://top-pr.ru', 'https://www.top-pr.ru']
 
 
 # Application definition
@@ -266,8 +265,13 @@ SHELL_PLUS = "ipython"
 # Юкасса
 
 if DEBUG:
-    Configuration.account_id = config('account_id')
-    Configuration.secret_key = config('secret_key')
-else:
     Configuration.account_id = 1028863
     Configuration.secret_key = 'test_KoJaPFqm8_8xHbXiQIW3R7TsnKFO2A2hNh1rbEYpU24'
+else:
+    Configuration.account_id = config('account_id')
+    Configuration.secret_key = config('secret_key')
+    
+    
+
+# CSRF_COOKIE_SECURE = False  # Отключает использование защищенных cookies для CSRF
+# CSRF_TRUSTED_ORIGINS = []   # Можно оставить пустым, если нет доверенных источников

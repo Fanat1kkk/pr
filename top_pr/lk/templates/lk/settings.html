@@ -13,11 +13,11 @@
                 <input 
                     id="id_username" 
                     type="text" 
-                    name="{{ user_form.username.name }}" 
-                    value="{{ user_form.username.value|default:'' }}" 
+                    name="{{ user_form.first_name.name }}" 
+                    value="{{ user_form.first_name.value|default:'' }}" 
                     placeholder="Ваше имя"
-                    class="text-xl xs:text-base placeholder-gray-600 hover:placeholder-gray-900 text-gray-600 pl-5 py-2 border rounded-md w-full border-gray-300 focus:ring-2 focus:outline-none {% if form.username.errors %}border-red-500{% endif %}">
-                {% for error in user_form.username.errors %}
+                    class="text-xl xs:text-base placeholder-gray-600 hover:placeholder-gray-900 text-gray-600 pl-5 py-2 border rounded-md w-full border-gray-300 focus:ring-2 focus:outline-none {% if form.first_name.errors %}border-red-500{% endif %}">
+                {% for error in user_form.first_name.errors %}
                 <p class="text-red-700 mt-1">{{ error }}</p>
                 {% endfor %}
             

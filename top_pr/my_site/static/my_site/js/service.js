@@ -47,7 +47,7 @@ function fetchAndUpdateServices(slug) {
 
 // Функция для отправки запроса с выбранной социальной сетью и услугой
 function fetchTariffs(social, service) {
-    fetch(`/services/${social}/${service}/`)
+    fetch(`/uslugi/${social}/${service}/`)
         .then(response => response.json())
         .then(data => {
             updateTariffCards(data); // Обновляем карточки тарифов

@@ -1,6 +1,14 @@
 {% extends "my_site/base.html" %}
 {% load static %}
 
+{% block canonical %}
+<link rel="canonical" href="https://top-pr.ru{{ social.get_absolute_url }}">
+{% endblock %}
+
+{% block desc %}
+<meta name="description" content="Закажите накрутку в {{ social.cat_name }} на Top-PR. Быстрое и безопасное продвижение в {{ social.cat_name }}.">
+{% endblock %}
+
 {% block title %}
 {{ social.cat_name }} услуги
 {% endblock %}
@@ -8,7 +16,7 @@
     <!-- Контейнер -->
     <div class="container">
         <div class="text-center text-3xl mb-28">
-            <h1>Каталог услуг для <span class="font-bold text-4xl">{{ social.cat_name }}</span></h1>
+            <h1>Каталог услуг по накрутке в <span class="font-bold text-4xl">{{ social.cat_name }}</span></h1>
         </div>
         <!-- Карточки Тарифов -->
         <div id="tariffCardsContainer" class="grid grid-cols-3 sm:grid-cols-2 xs:grid-cols-1  gap-8 w-full">

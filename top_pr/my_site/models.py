@@ -158,6 +158,9 @@ class Category(models.Model):
     slug = models.SlugField(blank=True, unique=True)
     img = models.CharField(verbose_name='Картинка', max_length=4, choices=IMG_LINKS)
 
+    def get_absolute_url(self):
+        return reverse('social', kwargs={'social': self.slug})
+
     def __str__(self) -> str:
         return self.cat_name
 
@@ -203,7 +206,7 @@ class CustomerReview(models.Model):
 class Service(models.Model):
 
     name = models.CharField(verbose_name='Название', max_length=30)
-    slug = models.SlugField(blank=True, null=True, unique=False)
+    slug = models.SlugField(blank=True, null=True, unique=True)
     category = models.ForeignKey(Category, verbose_name='Категория', related_name='services', on_delete=models.CASCADE)
     sub_cat = models.ForeignKey('Subcategory', verbose_name='Подкатегория', related_name='services', on_delete=models.CASCADE)
     service_id = models.IntegerField(verbose_name='Сервис ID', null=False, unique=True)
@@ -243,7 +246,7 @@ class Service(models.Model):
         return f'{self.name} {self.category}'
     
     def get_absolute_url(self):
-        return reverse('service_tariff', kwargs={'social': self.category.slug, 'tariff': self.slug})
+        return reverse('service_tariff', kwargs={'social': self.category.slug, 'category': self.sub_cat.slug, 'tariff': self.slug})
 
     class Meta:
         verbose_name = 'Услуга'
@@ -254,6 +257,13 @@ class Subcategory(models.Model):
     name = models.CharField(verbose_name='Назвение', max_length=35, unique=True)
     slug = models.SlugField(blank=True, null=True, unique=False)
     img = models.CharField(verbose_name='Картинка', max_length=4, choices=IMG_LINKS, null=True, blank=True)
+
+    def get_absolute_url(self):
+        # Берем первую связанную категорию (если есть)
+        category = self.categories.first()
+        if category:
+            return reverse('social_cat', kwargs={'social': category.slug, 'category': self.slug})
+        return '#'  # Если нет категории, возвращаем заглушку
 
     def __str__(self) -> str:
         return self.name

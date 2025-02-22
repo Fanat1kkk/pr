@@ -1,6 +1,9 @@
 from decimal import Decimal
+import hashlib
+import hmac
+import ipaddress
 from random import choice
-from hashlib import md5, sha1
+from hashlib import sha1
 import uuid
 
 from django.conf import settings
@@ -8,7 +11,7 @@ from django.conf import settings
 from my_site.models import Client, Order
 from .models import Transaction, ProviderPay
 
-from yookassa import Payment
+from yookassa import Payment, Configuration
 from yookassa.payment import PaymentResponse
 from yookassa.domain.models.confirmation.response.confirmation_redirect import ConfirmationRedirect
 from requests import Session
@@ -214,31 +217,50 @@ class PayYoomoney(PayBaseProvider):
 
 class PayYookassa(PayBaseProvider):
     name = ProviderPay.YOOM 
+    ALLOWED_IPS = [
+        "185.71.76.0/27",
+        "185.71.77.0/27",
+        "77.75.153.0/25",
+        "77.75.156.11",
+        "77.75.156.35",
+        "77.75.154.128/25",
+        "2a02:5180::/32",
+    ]
+
+    def is_valid_ip(self, ip):
+        """Проверяет, входит ли IP в разрешенные диапазоны."""
+        for allowed_ip in self.ALLOWED_IPS:
+            if ipaddress.ip_address(ip) in ipaddress.ip_network(allowed_ip, strict=False):
+                return True
+        return False
 
     def create_pay_profile(self, price: Decimal, client):
         unic_id = uuid.uuid4()
         price = price
-        self.redirect = self._pay_url(price=price, unic_id=unic_id, comment='Пополнение https://top-pr.ru/')
-        print('redirect: ', self.redirect)
-        Transaction.objects.create(client=client, unic_id=unic_id, sum=price, pay_type=Transaction.LK, pay_provider=self.name, pay_url=self.redirect)
+        payment = self._pay_url(price, unic_id, comment='Пополнение https://top-pr.ru/')
+        self.redirect = payment.confirmation.confirmation_url
+        Transaction.objects.create(client=client, unic_id=unic_id, p_unic_id=payment.id, sum=price, pay_type=Transaction.LK, pay_provider=self.name, pay_url=self.redirect)
+        
+    def verify_yookassa_signature(self, request):
+        return self.is_valid_ip(request.META.get('HTTP_X_FORWARDED_FOR', ''))
 
     def pay_status(self, data: dict):
         print('YOOKASSA: ', data)
         try:
-            order_id = data.get('id')
-            transaction = Transaction.objects.get(unic_id=order_id)
+            transaction_id = data['object']['id']
+            transaction = Transaction.objects.get(p_unic_id=transaction_id)
             transaction.paid()
         except Transaction.DoesNotExist:
-            print('not tr: ', order_id)
+            print('not tr: ', transaction_id)
             return False
 
     def create_pay(self, order: Order):
         unic_id = self._gen_tr_id()
         price = order.price
         sign = self.sign(price=price, unic_id=unic_id)
-        self.redirect = self._pay_url(price, unic_id, comment=f'Полата заказа: № {order.order_id}')
-        Transaction.objects.create(order=order, unic_id=unic_id, sum=price, client=order.client, pay_provider=self.name, sign=sign, pay_url=self.redirect)
-
+        payment = self._pay_url(price, unic_id, comment=f'Полата заказа: № {order.order_id}')
+        self.redirect = payment.confirmation.confirmation_url
+        Transaction.objects.create(order=order, unic_id=unic_id, p_unic_id=payment.id, sum=price, client=order.client, pay_provider=self.name, sign=sign, pay_url=self.redirect)
 
     def _pay_url(self, price:Decimal, unic_id, comment) -> dict:
 
@@ -254,7 +276,7 @@ class PayYookassa(PayBaseProvider):
                                         "description": comment
                                     }, unic_id)
         
-        return payment.confirmation.confirmation_url
+        return payment
 
 
 class PayProfileProvider(PayBaseProvider):
