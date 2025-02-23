@@ -258,11 +258,11 @@ class PayYookassa(PayBaseProvider):
         unic_id = self._gen_tr_id()
         price = order.price
         sign = self.sign(price=price, unic_id=unic_id)
-        payment = self._pay_url(price, unic_id, comment=f'Полата заказа: № {order.order_id}')
+        payment = self._pay_url(price, order.client, unic_id, comment=f'Полата заказа: № {order.order_id}')
         self.redirect = payment.confirmation.confirmation_url
         Transaction.objects.create(order=order, unic_id=unic_id, p_unic_id=payment.id, sum=price, client=order.client, pay_provider=self.name, sign=sign, pay_url=self.redirect)
 
-    def _pay_url(self, price:Decimal, unic_id, comment) -> dict:
+    def _pay_url(self, price:Decimal, client, unic_id, comment) -> dict:
 
         payment: PaymentResponse = Payment.create({"amount": {
                                         "value": price,
@@ -270,12 +270,27 @@ class PayYookassa(PayBaseProvider):
                                         },
                                         "confirmation": {
                                             "type": "redirect",
-                                            "return_url": "https://top-pr.ru/"
+                                            "return_url": "https://top-pr.ru/profile/"
                                         },
                                         "capture": True,
-                                        "description": comment
+                                        "description": comment,
+                                        "receipt": {
+                                            "customer": {
+                                                "email": client.email,  # Обязательно добавь email или телефон покупателя
+                                            },
+                                            "items": [
+                                                {
+                                                    "description": comment,
+                                                    "quantity": "1.00",
+                                                    "amount": {
+                                                        "value": price,
+                                                        "currency": "RUB"
+                                                    },
+                                                    "vat_code": "1"  # 1 – без НДС (для самозанятых)
+                                                }
+                                            ]
+                                        }
                                     }, unic_id)
-        
         return payment
 
 
