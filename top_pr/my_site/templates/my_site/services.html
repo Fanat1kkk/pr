@@ -43,7 +43,7 @@
                                 {% for cat in cats %}
                                 <div class="flex items-center p-2 cursor-pointer hover:bg-gray-100"
                                     data-value="{{ cat.slug }}" data-icon="img/telegram.svg">
-                                    <img src="{% static 'my_site/img/' %}{{ cat.get_img_display }}" class="w-5 h-5 mr-2" alt="Telegram">
+                                    <img src="{% static 'my_site/img/' %}{{ cat.get_img_display }}" class="w-5 h-5 mr-2" alt="{{cat.slug}}">
                                     <span>{{ cat.cat_name }}</span>
                                 </div>
                                 {% endfor %}
@@ -75,7 +75,7 @@
                                 {% for sub_cat in cats.0.sub_cat.all %}
                                 <div class="flex items-center p-2 cursor-pointer hover:bg-gray-100"
                                     data-value="{{ sub_cat.slug }}" data-icon="img/users.svg">
-                                    <img src="{% static "my_site/img/" %}{{ sub_cat.get_img_display }}" class="w-5 h-5 mr-2" alt="sub_cat.slug">
+                                    <img src="{% static "my_site/img/" %}{{ sub_cat.get_img_display }}" class="w-5 h-5 mr-2" alt="{{sub_cat.slug}}">
                                     <span>{{ sub_cat.name }}</span>
                                 </div>
                                 {% endfor %}
@@ -93,7 +93,7 @@
             {% for service in services %}
             <div class="bg-white shadow-lg rounded-lg p-6 flex flex-col h-full">
                 <div class="flex flex-col items-center flex-grow">
-                    <img src="{% static 'my_site/img/' %}{{ service.category.get_img_display }}" alt="Просмотры" class="w-10 h-10 mb-4">
+                    <img src="{% static 'my_site/img/' %}{{ service.category.get_img_display }}" alt="{{service.category.slug}}" class="w-10 h-10 mb-4">
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ service.category.cat_name }} {{ service.sub_cat.name }}</h3>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ service.name }}</h3>
                     <p class="text-gray-500 mb-4">Цена за 1000 шт: {{ service.price_1000| floatformat:"0" }} ₽</p>

@@ -46,13 +46,6 @@ def order_confirmation(request, order_id):
     try:
         order = Order.objects.get(order_id=order_id, client=request.user)
         pay_p = pay_variant_profile()
-        # for provider, name in ProviderPay.PROVIDERS:
-        #     img = next((img for p, img in ProviderPay.IMG if p == provider), None)
-        #     pay_p.append({
-        #         'provider': provider,
-        #         'name': name,
-        #         'img': img
-        #     })
         return render(request=request, template_name='lk/confirm_order_profile.html', context={'order': order, 
                                                                                             'pay_p': pay_p})
     except Order.DoesNotExist:

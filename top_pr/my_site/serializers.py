@@ -10,7 +10,8 @@ class PromoCodeSerializer(serializers.ModelSerializer):
         fields = ['percent', 'is_active']
     
     def get_is_active(self, obj):
-        return obj.is_active()
+        user = self.context.get('request').user
+        return obj.is_active(user)
     
     def get_percent(self, obj):
         return obj.discount_percent

@@ -144,7 +144,7 @@ class OrderForm(forms.ModelForm):
     def clean_promocode(self):
         promocode = self.cleaned_data.get('promocode', None)
         
-        if promocode and not promocode.is_active():
+        if promocode and not promocode.is_active(self.user):
             raise forms.ValidationError('Код не действительный')
         
         return promocode
@@ -158,8 +158,8 @@ class OrderForm(forms.ModelForm):
         client = Client.objects.get_or_creat_user_from_email(email=email, request=self.request)
         order.client = client
         if promocode:
-            order.promocode = promocode or None
-            promocode.activate()
+            order.promocode = promocode 
+            promocode.activate(order)
         order.order_id = order.gen_order_id()
         order.calc_price(save=False)
         

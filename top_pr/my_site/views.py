@@ -131,8 +131,6 @@ def services_filter(request, social, category):
         tariffs = Service.objects.filter(category__slug=social, sub_cat__slug=category, is_published=True).prefetch_related(
             'category',
             Prefetch('category__sub_cat', queryset=Subcategory.objects.filter(slug=category)))
-        print('social: ', social)
-        print('tariffs: ', tariffs)
         serializer = ServiceInfoSerializer(tariffs, many=True)
         return Response(serializer.data)
     else: return Response([])
@@ -296,13 +294,6 @@ def order_confirmation(request, order_id):
     try:
         order = Order.objects.get(order_id=order_id, client=request.user)
         pay_p = pay_variant_profile()
-        # for provider, name in ProviderPay.PROVIDERS:
-        #     img = next((img for p, img in ProviderPay.IMG if p == provider), None)
-        #     pay_p.append({
-        #         'provider': provider,
-        #         'name': name,
-        #         'img': img
-        #     })
         return render(request=request, template_name='my_site/confirm_order.html', context={'order': order, 
                                                                                             'pay_p': pay_p})
     except Order.DoesNotExist:
@@ -353,9 +344,9 @@ def order_pay(request):
 def get_promocode(request, promocode):
     try:
         code = PromoCode.objects.get(code=promocode)
-        if not code.is_active():
+        if not code.is_active(request.user):
             return Response({'error': 'Промокод не найден'})
-        serializer = PromoCodeSerializer(code)
+        serializer = PromoCodeSerializer(code, context={'request': request})
         return Response(serializer.data)
     except PromoCode.DoesNotExist:
         return Response({'error': 'Промокод не найден'})

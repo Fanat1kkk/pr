@@ -7,67 +7,62 @@
 {% endblock %}
 
 {% block title %}
-Подтверждение заказа:{{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }}
+Оплата: {{ order.service.sub_cat.name }} {{ order.service.category.cat_name }}: {{ order.service.name }}
 {% endblock %}
 
 {% block confirm_order %}
 <main class="container">
-
-    <div class="pt-24 pb-10">
-        <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
-        <div class="flex sm:flex-col w-full">
-            <div class="flex sm:flex-col w-full max-w-4xl gap-10 sm:gap-0">
-                <!-- Форма оформления заказа -->
-                <div class="flex-1 text-lg text-gray-900 font-semibold">
-                    <p class="mt-6">
-                        <span>Соц. Сеть:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.category.cat_name }}</span>
-                    </p>
-                    <p class="mt-6">
-                        <span>Категория:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.sub_cat.name }}</span>
-                    </p>
-                    <p class="mt-6">
-                        <span>Тариф:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.name }} ({{ order.service.price_per_one }} руб./шт)</span>
-                    </p>
-                    <p class="mt-6">
-                        <span>Количество:</span><span class="text-gray-600 font-medium ml-6">{{ order.count }} шт.</span>
-                    </p>
-                    <p class="mt-6">
-                        <span>Цена:</span><span class="text-gray-600 font-medium ml-6">{{ order.get_price|format_decimal }} руб</span>
-                    </p>
-                    <p class="mt-6">
-                        <span>Ссылка:</span><a href="{{ order.task_url }}" class="text-blue-600 font-medium ml-6">{{ order.task_url }}</a>
-                    </p>
-                </div>
-                <!-- Описание услуги -->
-                <div class="flex-none ml-6 sm:min-w-[70%] p-4 border border-gray-200 rounded-lg mt-6 h-fit">
-                    <h2 class="text-[#282c4b] text-2xl font-medium">Об услуге</h2>
-                    <div class="border-t border-gray-200 my-5"></div>
-                    <h3>{{ order.service.text_info|safe }}</h3>
-                </div>
-            </div>
+    <h1 class="text-start text-2xl font-bold text-gray-500 mb-6">Оплата заказа: № {{ order.order_id }}</h1>
+    <!-- ОФОРМЛЕНИЕ ЗАКАЗА -->
+    <div class="flex sm:flex-col w-full">
+        <!-- Форма оформления заказа -->
+        <div class="w-1/2 sm:w-full flex-col mb-6 text-lg text-gray-900 font-semibold">
+            <p class="mt-6">
+                <span>Соц. Сеть:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.category.cat_name }}</span>
+            </p>
+            <p class="mt-6">
+                <span>Категория:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.sub_cat.name }}</span>
+            </p>
+            <p class="mt-6">
+                <span>Тариф:</span><span class="text-gray-600 font-medium ml-6">{{ order.service.name }} ({{ order.service.price_per_one }} руб./шт)</span>
+            </p>
+            <p class="mt-6">
+                <span>Количество:</span><span class="text-gray-600 font-medium ml-6">{{ order.count }} шт.</span>
+            </p>
+            <p class="mt-6">
+                <span>Цена:</span><span class="text-gray-600 font-medium ml-6">{{ order.get_price|format_decimal }} руб</span>
+            </p>
+            <p class="mt-6">
+                <span>Ссылка:</span><a href="{{ order.task_url }}" class="text-blue-600 font-medium ml-6">{{ order.task_url }}</a>
+            </p>
         </div>
-
-        {% if order.status == 'NOPAY' %}
-        <!-- Способы оплаты -->
-        <div class="max-w-md mt-5">
-            <h3 class="text-gray-600">Способ пополнения</h3>
-            {% for provider in pay_p %}
-            <div class="payments flex items-center justify-between mt-3 mb-3 border border-gray-300 rounded p-2 hover:ring-2 hover:offset-blue-500" onclick="select_payment(this)" data-method="{{ provider.provider }}">
-                <div class="flex items-center">
-                    <img src="{% static 'my_site/img/' %}{{ provider.img }}" alt="credit-card" class="h-8 w-8">
-                    <span class="text-gray-700 text-xl ml-3">{{ provider.name }}</span>
-                </div>
-                <img id="payment-img" src="{% static 'my_site/img/check_p.svg' %}" alt="check_p" class="hidden h-8 w-8">
-            </div>
-            {% endfor %}
-            <span id="method-error" class="text-red-700 mt-1"></span>
-            <div>
-                <button id="btn_pay" onclick="pay()" data-price="{{ order.get_price|format_decimal }}" data-orderid="{{order.order_id}}"
-                class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500">Оплатить</button>
-            </div>
+        <!-- Описание услуги -->
+        <div class="w-1/2 sm:w-full p-2 border border-gray-200 bg-gray-50 rounded-lg">
+            <h2 class="text-[#282c4b] text-2xl font-medium">Об услуге</h2>
+            <div class="border-t border-gray-200 my-5"></div>
+            <h3>{{ order.service.text_info|safe }}</h3>
         </div>
-        {% endif %}
     </div>
+    {% if order.status == 'NOPAY' %}
+    <!-- Способы оплаты -->
+    <div class="max-w-md mt-5">
+        <h3 class="text-gray-600">Способ пополнения</h3>
+        {% for provider in pay_p %}
+        <div class="payments flex items-center justify-between mt-3 mb-3 border border-gray-300 rounded p-2 hover:ring-2 hover:offset-blue-500" onclick="select_payment(this)" data-method="{{ provider.provider }}">
+            <div class="flex items-center">
+                <img src="{% static 'my_site/img/' %}{{ provider.img }}" alt="credit-card" class="h-8 w-8">
+                <span class="text-gray-700 text-xl ml-3">{{ provider.name }}</span>
+            </div>
+            <img id="payment-img" src="{% static 'my_site/img/check_p.svg' %}" alt="check_p" class="hidden h-8 w-8">
+        </div>
+        {% endfor %}
+        <span id="method-error" class="text-red-700 mt-1"></span>
+        <div>
+            <button id="btn_pay" onclick="pay()" data-price="{{ order.get_price|format_decimal }}" data-orderid="{{order.order_id}}"
+            class="text-white bg-gradient-to-r from-teal-300 to-blue-500 hover:from-blue-500 hover:to-teal-300 px-7 py-3 rounded-3xl tracking-wide transition-all duration-500">Оплатить</button>
+        </div>
+    </div>
+    {% endif %}
 
 </main>
 

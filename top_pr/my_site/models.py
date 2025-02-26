@@ -54,6 +54,7 @@ IMG_LINKS = (
     ('USES', 'users.svg'),
 )
 
+
 class BalanceTransaction(models.Model):
     R = 'R'
     A = 'A'
@@ -276,38 +277,62 @@ class Subcategory(models.Model):
 class PromoCode(models.Model):
     code = models.CharField(verbose_name='Код', unique=True, primary_key=True, max_length=7)
     discount_percent = models.IntegerField(verbose_name='Процент скидки', default=0)
-    max_number_uses = models.IntegerField(verbose_name='Макс кол-во гошений', default=1)
-    number_uses = models.IntegerField(verbose_name='Кол-во гошений', blank=False, default=0)
-    is_multiple = models.BooleanField(verbose_name='Многоразовый')
+    max_number_uses = models.IntegerField(verbose_name='Макс кол-во гошений', default=-1, help_text='Общее ограничение. -1 не ограниченое кол-во использований. Если другое значение то общее число использования кода не бдут выше этого значения')
+    number_uses = models.IntegerField(verbose_name='Общее кол-во гошений', blank=False, default=0)
+    number_uses_from_user = models.IntegerField(verbose_name='Кол-во гошений для одного клиента', blank=False, default=-1, help_text='-1 не ограниченое кол-во использований.')
+    # is_multiple = models.BooleanField(verbose_name='Многоразовый')
+    is_multiple_from_user = models.BooleanField(verbose_name='Многоразовый для одного клиента', default=True, help_text='1 клиент может использовать код несколько раз но не более number_uses_from_user')
     date_end = models.DateTimeField(verbose_name='Дата окончания', null=True)
     date_create = models.DateTimeField(verbose_name='Дата создания', auto_now_add=True)
     date_edit = models.DateTimeField(verbose_name='Дата изменения', auto_now=True)
 
-    def activate(self):
-        if self.is_active():
-            self.number_uses += 1
-            self.save()
+    def activate(self, order: 'Order'):
+        PromoCodeUsage.objects.create(user=order.client, promo_code=self)
+        self.number_uses += 1
+        self.save()
 
-    def is_active(self):
+    def is_active(self, client: Client):
         # Првоеряет актуальный ли промокод
-        if not self.is_multiple:
-            # Если не многоразовый
-            if self.max_number_uses <= self.number_uses:
-                return False
-        
         if self.date_end < timezone.now():
+            # Если время вышло
             return False
-        
+        if self.max_number_uses == -1 and self.is_multiple_from_user:
+            return True
+            
+        uses = self.promo_usage.filter(user=client)
+        if self.is_multiple_from_user:
+             # Если промокод многоразовый для каждого клиента
+            if self.number_uses_from_user == -1:
+                # Если нет ограничений по гашению для одного клиента
+                return True
+            else:
+                # Если есть ограничения по гашению для одного клиента
+                if uses.count() >= self.number_uses_from_user:
+                    return False
+        else:
+            # Если промокод одноразовый для каждого клиента
+            if self.max_number_uses != -1:
+                if self.number_uses >= self.max_number_uses:
+                    return False
+            else:
+                if uses.count() >= self.number_uses_from_user:
+                    return False
         return True
 
-    def calc(self, price: Decimal) -> Decimal:
-        if not self.is_active():
+    def calc(self, price: Decimal, client: Client) -> Decimal:
+        if not self.is_active(client):
             return price
         price -= ((Decimal(str(self.discount_percent)) / Decimal('100')) * price)
         return price.quantize(Decimal('0.00'), rounding=ROUND_HALF_UP)
 
     def __str__(self) -> str:
         return f'Скидка {self.discount_percent}%'
+
+
+class PromoCodeUsage(models.Model):
+    user = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='promo_usage')  # Пользователь, который применил промокод
+    promo_code = models.ForeignKey(PromoCode, on_delete=models.CASCADE, related_name='promo_usage')  # Применённый промокод
+    used_at = models.DateTimeField(auto_now_add=True)  # Дата использования
 
 
 class ABSOrderTask(models.Model):
@@ -410,7 +435,8 @@ class Order(ABSOrderTask):
         price = price_per_one * Decimal(str(self.count))
         # Если активный промокод
         if self.promocode:
-            price = self.promocode.calc(price)
+            price = self.promocode.calc(price, self.client)
+            # print(f'order: {self.order_id} promo: {price}')
         # Запись в БД если цена изменилась
         if self.price != price:
             self.price = price

@@ -20,7 +20,14 @@ class TransactionInline(admin.TabularInline):
 
 @admin.register(PromoCode)
 class PromoCodeAdmin(admin.ModelAdmin):
-    list_display = ['code', 'discount_percent']
+    readonly_fields = ['number_uses', ]
+    list_display = ['code', 'discount_percent', 'is_multiple_from_user']
+    
+    
+@admin.register(PromoCodeUsage)
+class PromoCodeUsageAdmin(admin.ModelAdmin):
+    list_display = ['user', 'promo_code', 'used_at']
+
 
 
 @admin.register(Client)
