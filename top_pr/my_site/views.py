@@ -17,7 +17,7 @@ from rest_framework.decorators import api_view
 from payments.models import ProviderPay
 from payments.providers import pm, pay_variant_profile
 
-from .models import Category, Order, Service, Subcategory, PromoCode
+from .models import Category, Order, Service, Subcategory, PromoCode, Article, CategorySubcategory
 from .forms import OrderForm, MyLogInForm, MySignupForm, PayProfileForm, MyResetPasswordForm, MyResetPasswordKeyForm, CommentForm
 from .serializers import PromoCodeSerializer, ServiceSerializer, SubcategorySerializer, SubcategorySlugSerializer, ServiceInfoSerializer
 from .exceptions import BalanceException
@@ -438,8 +438,9 @@ def social(request, social: str):
     try:
         social = Category.objects.get(slug=social)
         services = Service.objects.filter(is_published=True, category=social)
+        article = Article.objects.filter(category=social, subcategory=None, tariff=None).first()
 
-        return render(request=request, template_name='my_site/service_cat.html', context={'services': services, 'social': social})
+        return render(request=request, template_name='my_site/service_cat.html', context={'services': services, 'social': social, 'article': article})
 
     except Category.DoesNotExist:
         return render(request=request, template_name='404.html', status=404)
@@ -459,13 +460,19 @@ def service_tariff(request, social: str, category: str, tariff: str):
 
 def social_cat(request, social, category):
     if social and category:
-        tariffs = Service.objects.filter(category__slug=social, sub_cat__slug=category, is_published=True).prefetch_related(
+        social = Category.objects.get(slug=social)
+        category = Subcategory.objects.get(slug=category)
+        tariffs = Service.objects.filter(category=social, sub_cat=category, is_published=True).prefetch_related(
             'category',
             Prefetch('category__sub_cat', queryset=Subcategory.objects.filter(slug=category)))
         if len(tariffs) == 0:
             return render(request=request, template_name='404.html', status=404)
-        social = Category.objects.get(slug=social)
-        return render(request=request, template_name='my_site/service_cat.html', context={'services': tariffs, 'social': social})
+        article = Article.objects.filter(category=social, subcategory=category).first()
+        try:
+            meta = CategorySubcategory.objects.get(subcategory=category, category=social)
+        except CategorySubcategory.DoesNotExist:
+            meta=None
+        return render(request=request, template_name='my_site/service_sub_cat.html', context={'services': tariffs, 'social': social, 'article': article, 'meta': meta})
     else: return render(request=request, template_name='404.html', status=404)
 
 

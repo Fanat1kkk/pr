@@ -96,4 +96,13 @@ class TaskAdmin(admin.ModelAdmin):
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['service', 'rating_speed', 'rating_acc']
     
-    
+
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
+    list_display = ['category', 'subcategory', 'tariff']
+
+
+@admin.register(CategorySubcategory)
+class CategorySubcategoryAdmin(admin.ModelAdmin):
+    list_display = ('category', 'subcategory', 'description')
+    list_filter = ('category', 'subcategory')

@@ -1,0 +1,31 @@
+{% extends "my_site/base.html" %}
+
+{% block blog %}
+<div class="container mx-auto px-4">
+    <h1 class="text-3xl font-bold text-center my-6">Блог</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for post in posts %}
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <a href="{{ post.get_absolute_url }}">
+                <div class="w-full h-[200px] overflow-hidden">
+                    <img src="{{ post.image.url }}" alt="{{ post.title }}"
+                        class="w-full h-full object-cover">
+                </div>
+            </a>
+            <div class="p-4">
+                <h2 class="text-xl font-semibold mb-2">
+                    <a href="{{ post.get_absolute_url }}" class="hover:text-blue-500">
+                        {{ post.title }}
+                    </a>
+                </h2>
+                <p class="text-gray-600 line-clamp-3">{{ post.content|truncatewords:20 }}</p>
+                <a href="{{ post.get_absolute_url }}" class="text-blue-500 font-semibold mt-2 block">
+                    Читать далее →
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

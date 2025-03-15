@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'payments.apps.PaymentsConfig',
     'cupons.apps.CuponsConfig',
     'lk.apps.LkConfig',
+    'blog.apps.BlogConfig',
     'sitemap_gen',
 ]
 
@@ -200,6 +201,9 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "my_site/static"),
     os.path.join(BASE_DIR, "lk/static"),
 ]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field

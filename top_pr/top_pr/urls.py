@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 
 sitemaps = {}
 
@@ -25,4 +27,7 @@ urlpatterns = [
     path('profile/', include('lk.urls')),
     path('', include('my_site.urls')),
     path('', include('sitemap_gen.urls')),
+    path('blog/', include('blog.urls')),
 ]
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

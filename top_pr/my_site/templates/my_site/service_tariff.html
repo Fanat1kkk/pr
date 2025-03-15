@@ -6,11 +6,19 @@
 {% endblock %}
 
 {% block desc %}
-<meta name="description" content="Закажите {{ service.sub_cat.name }} для {{ service.category.cat_name }} на Top-PR. Быстрое и безопасное продвижение в {{ service.category.cat_name }}.">
+  {% if service.description %}
+  <meta name="description" content="{{ service.description }}">
+  {% else %}
+  <meta name="description" content="Закажите {{ service.sub_cat.p_name|lower }} для {{ service.category.cat_name }} на Top-PR. Быстрое и безопасное продвижение в {{ service.category.cat_name }}.">
+  {% endif %}
 {% endblock %}
 
 {% block title %}
-{{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }} | Top-PR
+  {% if service.title %}
+  {{ service.title }}
+  {% else %}
+  {{ service.sub_cat.name }} {{ service.category.cat_name }}: {{ service.name }} | Top-PR
+  {% endif %}
 {% endblock %}
 
 {% block create_order %}

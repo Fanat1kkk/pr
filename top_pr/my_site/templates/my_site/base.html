@@ -5,19 +5,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    {% block canonical %}
-    <link rel="canonical" href="https://top-pr.ru/">
-    {% endblock %}
-    {% block desc %}
-    <meta name="description" content="Увеличьте лайки, подписчиков и просмотры в Instagram, TikTok и других соцсетях быстро и выгодно. Попробуйте Top-PR прямо сейчас.">
-    {% endblock %}
+    {% block canonical %}<link rel="canonical" href="https://top-pr.ru/">{% endblock %}
+    {% block desc %}<meta name="description" content="Увеличьте лайки, подписчиков и просмотры в Instagram, TikTok и других соцсетях быстро и выгодно. Попробуйте Top-PR прямо сейчас.">{% endblock %}
     <link rel="shortcut icon" href="{% static 'my_site/img/favicon.ico' %}" type="image/x-icon" />
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{% static 'my_site/css/output.css' %}" />
-    
-    <title>
-      {% block title %}Top-PR - Лайки, подписчики, просмотры в Instagram, TikTok и других соцсетях{% endblock %}
-    </title>
+    {% block keywords %}<meta name="keywords" content="">{% endblock %}
+    <title>{% block title %}Top-PR - Лайки, подписчики, просмотры в Instagram, TikTok и других соцсетях{% endblock %}</title>
   </head>
 
   <body class="font-lato min-h-screen flex flex-col">
@@ -106,6 +100,9 @@
     {% endblock %}
 
     <main class="bg-gray-100 xs:pt-8 flex-1 pt-14">
+      {% block blog %}
+      {% endblock %}
+
       {% block main %}
       {% endblock %}
 

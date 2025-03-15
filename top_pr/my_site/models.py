@@ -158,6 +158,8 @@ class Category(models.Model):
     sub_cat = models.ManyToManyField('Subcategory', related_name='categories')
     slug = models.SlugField(blank=True, unique=True)
     img = models.CharField(verbose_name='Картинка', max_length=4, choices=IMG_LINKS)
+    description_teg = models.CharField(verbose_name='description', max_length=160, blank=True, null=True)
+    title = models.CharField(verbose_name='title', max_length=160, blank=True, null=True)
 
     def get_absolute_url(self):
         return reverse('social', kwargs={'social': self.slug})
@@ -229,6 +231,8 @@ class Service(models.Model):
     provider_service_id = models.IntegerField(verbose_name='Сервис ID провайдера', null=False)
     is_published = models.BooleanField(verbose_name='Активна?', default=False)
     is_cancellation = models.BooleanField(verbose_name='Есть отмена?', default=False)
+    title = models.CharField(verbose_name='title', max_length=160, blank=True, null=True)
+    description = models.CharField(verbose_name='description', max_length=160, blank=True, null=True)
     
     def price_per_one(self) -> Decimal:
         '''
@@ -256,8 +260,10 @@ class Service(models.Model):
 
 class Subcategory(models.Model):
     name = models.CharField(verbose_name='Назвение', max_length=35, unique=True)
+    p_name = models.CharField(verbose_name='Назвение в рад. падеже', max_length=35, null=False)
     slug = models.SlugField(blank=True, null=True, unique=False)
     img = models.CharField(verbose_name='Картинка', max_length=4, choices=IMG_LINKS, null=True, blank=True)
+    description_teg = models.CharField(max_length=160, blank=True, null=True)
 
     def get_absolute_url(self):
         # Берем первую связанную категорию (если есть)
@@ -584,3 +590,24 @@ class Task(ABSOrderTask):
     class Meta:
         verbose_name = 'Задача'
         verbose_name_plural = 'Задачи'
+
+
+class Article(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="articles", verbose_name="Категория", null=True, blank=True)
+    subcategory = models.ForeignKey(Subcategory, on_delete=models.CASCADE, related_name="articles", verbose_name="Подкатегория", null=True, blank=True)
+    tariff = models.ForeignKey(Service, on_delete=models.CASCADE, related_name="articles", verbose_name="Тариф", null=True, blank=True)
+    content = RichTextField(verbose_name="Содержание статьи")
+
+    def __str__(self):
+        return self.category.cat_name
+    
+
+class CategorySubcategory(models.Model):
+    subcategory = models.ForeignKey(to=Subcategory, related_name='description', on_delete=models.CASCADE)
+    category = models.ForeignKey(to=Category, related_name='description', on_delete=models.CASCADE)
+    description = models.CharField(verbose_name='Description', blank=True, null=True, max_length=160)
+    title = models.CharField(verbose_name='Title', blank=True, null=True, max_length=160)
+    keywords = models.CharField(verbose_name='keywords', blank=True, null=True, max_length=160)
+
+    class Meta:
+        unique_together = ('category', 'subcategory')
