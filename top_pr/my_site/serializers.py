@@ -43,10 +43,13 @@ class ServiceSerializer(serializers.ModelSerializer):
     
 class ServiceInfoSerializer(serializers.ModelSerializer):
     category = CategorySerializer()
+    price = serializers.SerializerMethodField()
     class Meta:
         model = Service
         fields = ['name', 'slug', 'price', 'service_id', 'min_count', 'max_count', 'speed_day', 'speed', 'quality', 'text_info', 'text_pre_info', 'category']
-    
+
+    def get_price(self, obj):
+        return obj.price_1000()
 
 class SubcategorySerializer(serializers.ModelSerializer):
     services = ServiceSerializer(many=True)  # Связанные сервисы
