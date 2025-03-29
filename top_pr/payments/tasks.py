@@ -18,12 +18,13 @@ def send_email_order_pay(transaction_id: int):
 
     ID: {order.order_id}
     Цена: {del_zero(order.price)} руб.
-    Ссылка: {order.task_url}
     Количество: {order.count}
 
-    Тут вы можете следить за заказами: https://top-pr.ru/orders/search?email={order.client.email}
+    Тут вы можете следить за заказами: https://top-pr.ru/profile/
 
     В случаи отмены заказа все средства вернутся на баланс вашего аккаунта.
+
+    Ежедневные скидки: https://t.me/top_p_r
 
     Контакты: 
     Telegram - https://t.me/topprru
@@ -44,6 +45,8 @@ def send_email_profile_pay(transaction_id: int):
     text = f'''
 
     Вы пополнили баланс на {del_zero(t.sum)}
+
+    Ежедневные скидки: https://t.me/top_p_r
 
     Контакты: 
     Telegram - https://t.me/topprru

@@ -237,7 +237,7 @@ class PayYookassa(PayBaseProvider):
     def create_pay_profile(self, price: Decimal, client):
         unic_id = uuid.uuid4()
         price = price
-        payment = self._pay_url(price, unic_id, comment='Пополнение https://top-pr.ru/')
+        payment = self._pay_url(price=price, client=client, unic_id=unic_id, comment='Пополнение https://top-pr.ru/')
         self.redirect = payment.confirmation.confirmation_url
         Transaction.objects.create(client=client, unic_id=unic_id, p_unic_id=payment.id, sum=price, pay_type=Transaction.LK, pay_provider=self.name, pay_url=self.redirect)
         
